@@ -1,0 +1,33 @@
+package hardExercise;
+
+public class Chain {
+	Node<Integer> head, tail;
+	public Chain(int start, int count, int step) {
+		head = new Node<Integer>(start, null);
+		Node<Integer>runner = head;
+		int size = 1;
+		for (int i = 1; i < count; i++) {
+			runner.next = new Node<Integer>(runner.data+step, null);
+			runner=runner.next;
+		}
+		tail = runner;
+		tail.next = head;
+	}
+	
+	public String toString() {
+		String out = "";
+		if (head == null)
+			return out;
+		Node<Integer>runner = head;
+		do {
+			out+=runner.data + " -> ";
+			runner = runner.next;
+		} while(runner != head);
+		out += "Back 2 Head";
+		return out;
+	}
+	
+	public void addNode(Node n) {
+		
+	}
+}

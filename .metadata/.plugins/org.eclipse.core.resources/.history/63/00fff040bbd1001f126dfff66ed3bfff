@@ -1,0 +1,38 @@
+package dp;
+
+import java.util.ArrayList;
+
+public class DP {
+	
+	public static void main(String[] args) {
+		System.out.println(prime(1));
+	}
+	
+	public static long prime(int n) {
+		ArrayList<Long> memo = new ArrayList<Long>();
+		memo.add((long) 2);
+		
+		return primeH(n, memo);
+	}
+	
+	private static long primeH(int n, ArrayList<Long> memo) {
+		if (n < memo.size() ) {
+			return memo.get(n);
+		}
+		long num = memo.get(memo.size() - 1) + 1;
+		
+		while ( memo.size() >= n ) {
+			boolean isPrime = true;;
+			for (Long prime : memo) {
+				if (num % prime == 0) {
+					isPrime = false;
+				}
+			}
+			if (isPrime) {
+				memo.add(num);
+			}
+			num++;
+		}
+		return memo.get(n);
+	}
+}

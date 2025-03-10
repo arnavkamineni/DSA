@@ -1,0 +1,35 @@
+package linkyListy;
+
+import java.util.LinkedList;
+
+public class Link {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		LinkedList<String> presidents = new LinkedList<String>();
+		presidents.add("George Washington");
+		presidents.add("John Adams");
+		presidents.add("Thomas Jefferson");
+		presidents.add("James Madison");
+		for(String s: presidents) {
+			System.out.println(s);
+		}
+		presidents.add(4, "James Monroe");
+//		presidents.add(5, "James Monroe"); BAD just like luke smith
+		LinkedList<String> more = new LinkedList<String>(presidents);
+		for(String s: presidents) {
+			System.out.println(s);
+		}
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		Track t1 = new Track("Yellow Sub", "Beatles", 160,null);
+		Track t2 = new Track("Northern Song", "Beatles", 208,null);
+		Track t3 = new Track("All Together Now", "Beatles", 134,null);
+		Track t4 = new Track("Hey Bulldog", "Beatles", 194,null);
+		Playlist Yellow = new Playlist(t1);
+		Yellow.addTrack(t3);
+		Yellow.addTrack(t1, t2);
+	}
+
+}

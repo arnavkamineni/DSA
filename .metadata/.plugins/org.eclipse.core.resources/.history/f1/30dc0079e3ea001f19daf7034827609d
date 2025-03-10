@@ -1,0 +1,207 @@
+package tree;
+
+public class TNode {
+	Integer value;
+	TNode left, right;
+	public TNode(Integer val) {
+		value = val;
+	}
+	
+	public TNode(Integer value, TNode left, TNode right) {
+		super();
+		this.value = value;
+		this.left = left;
+		this.right = right;
+	}
+	
+	public void addNode(TNode tn) {
+		if(tn.value < this.value) {
+			if (this.left == null) {
+				this.left = tn;
+			} else {
+				this.left.addNode(tn);
+			}
+		} else if(tn.value > this.value) {
+			if (tn.value > this.value) {
+				if (this.right == null) {
+					this.right = tn;
+				} else {
+					this.right.addNode(tn);
+				}
+			}
+		}
+		
+		// AVL Balance
+		if(this.getBalance() > 1 && this.left.getBalance() > 0) {
+			// left left case
+		}
+		
+		
+	}
+	
+	public TNode rightRotate() {
+		TNode newRoot = this.left;
+		TNode newRight = this.right;
+		newRoot.right = this;
+		this.left = newRight;
+		return newRight;
+	}
+	
+	public String inOrder() {
+		String out = "";
+		if (left == null) {
+			out = "" + this.value;
+		} else {
+			left.inOrder();
+		}
+		if (right == null) {
+			return out;
+		} else {
+			return right.inOrder();
+		}
+	}
+	
+	public String preOrder() {
+		String out = this.value + "";
+		if (left != null) {
+			left.preOrder();
+		} 
+		if (right == null) {
+			return out;
+		} else {
+			return right.preOrder();
+		}
+	}
+	
+	public String postOrder() {
+		String out = "";
+		if (left != null) {
+			out += left.postOrder() + ", ";
+		} 
+		if (right != null) {
+			out += right.postOrder() + ", ";
+		} 	
+		return out + this.value;
+	}
+	
+	public TNode get(int v) {
+		if (v == value) 
+			return this;
+		if (v > value) 
+			return right != null ? right.get(v) : null;
+		return left != null ? left.get(v) : null;
+	}
+
+	public TNode getParent(int v) {
+		if (left != null && left.value == v) 
+			return this;
+		
+		if (right != null && right.value == v) 
+			return this;
+		
+		if (v > value) 
+			return right != null ? right.getParent(v) : null;
+		return left != null ? left.getParent(v) : null;
+	}
+	
+	public int getHeight() {
+		if (left == null && right == null) {
+			return 0;
+		}
+
+		return 1 + Math.max(left == null ? 0 : left.getHeight(), right == null ? 0 : right.getHeight());
+	}
+	
+	public String toString() {
+		return this.value+"";
+	}
+	
+	public int size() {
+		if (left == right)
+			return 1;
+
+		return 1 + Math.max(left == null ? 1 : left.getHeight(), right == null ? 1 : right.getHeight());
+		
+	}
+	
+	public TNode delete (int v) {
+		TNode parent = this.getParent(v);
+		if(parent == null) {
+			return null;
+		}
+		TNode orphan = parent.get(v); 
+		
+		//case 1: disowned has no kids
+		if (orphan.left == null && orphan.right == null) {
+			if(parent.left == orphan) {
+				parent.left = null;
+			} else {
+				parent.right = null;
+			}
+			return orphan;
+		}
+		
+		//case 2: orphan only has one child
+		if (orphan.left == null || orphan.right == null) {
+			TNode grandchild = orphan.left == null ? orphan.right: orphan.left;
+			if (parent.left == orphan)
+				parent.left = grandchild;
+			else 
+				parent.right = grandchild;
+			return orphan;
+		}
+		
+		//case 3: orphan has 2 kids
+		TNode biggestChild = orphan.left;
+		while(biggestChild.right != null) {
+			biggestChild = biggestChild.right;
+		}
+		
+		orphan.value = biggestChild.value;
+//		biggestChild.value = v; will not work cause tree gets reordered
+		if(biggestChild == orphan.left)
+			orphan.left = biggestChild.left;
+		else 
+			orphan.left.delete(orphan.value);
+		return new TNode(v);
+	}
+	
+	public static void mirror(TNode n) {
+		if (n != null) {
+			TNode t = n.left;
+			n.right = n.left;
+			n.left = t;
+			mirror(n.left);
+			mirror(n.right);
+		}
+	}
+	
+	public static String edge(TNode n) {
+		String bruh[] = new String[1];
+		bruh[0] = "";
+		return edgeH(n, bruh);
+	}
+	
+	public static String edgeH(TNode n, String bruh[]) {
+		if (n.left != null) {
+			bruh[0] += edgeH(n.left, bruh) + n.value;
+		} else {
+			return ""+n.value;
+		}
+		
+		bruh[0] += "" + n.value;
+		if (n.right != null) {
+			bruh[0] += n.value + edgeH(n.left, bruh);
+		} else {
+			return n.value + "";
+		}
+		return bruh[0];
+	}
+	
+	public int getBalance() {
+		int heightL = this.left == null ? -1: this.left.getHeight();
+		int heightR = this.right == null ? -1: this.right.getHeight();
+		return heightL - heightR;
+	}
+	
+}

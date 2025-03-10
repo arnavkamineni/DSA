@@ -1,0 +1,14 @@
+package lab;
+
+import java.io.File;
+
+public class Driver {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		File f = new File("Sport car price.csv");
+		CustomHashMap m = new CustomHashMap();
+		m.loadFromFile(f);
+	}
+
+}

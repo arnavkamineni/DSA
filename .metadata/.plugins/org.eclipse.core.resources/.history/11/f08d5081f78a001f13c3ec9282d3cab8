@@ -1,0 +1,9 @@
+package hardExercise;
+
+public class Chain {
+	Node<Integer> head, tail;
+	public Chain(int start, int count, int step) {
+		head = new Node<Integer>(start, null);
+		
+	}
+}

@@ -1,0 +1,200 @@
+package sortLab;
+import javax.swing.*;
+import java.awt.*;
+import java.util.*;
+import java.io.*;
+import java.util.List;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+public class RadixSortPanel extends JPanel {
+    private JSlider speedSlider;
+    private JComboBox<String> sortTypeSelector;
+    private JButton loadFileButton, startButton;
+    private List<Integer> numbers = new ArrayList<>();
+    private int[] counts = new int[10]; // Counts array for current digit
+    private int animationSpeed = 500; // Default speed in ms
+
+    public RadixSortPanel() {
+        setLayout(new BorderLayout());
+
+        // Controls Panel
+        JPanel controls = new JPanel();
+        controls.setLayout(new FlowLayout());
+
+        loadFileButton = new JButton("Load Numbers");
+        loadFileButton.addActionListener(e -> loadNumbersFromFile());
+        controls.add(loadFileButton);
+
+        sortTypeSelector = new JComboBox<>(new String[]{"LSD Radix Sort", "MSD Radix Sort"});
+        controls.add(sortTypeSelector);
+
+        startButton = new JButton("Start Sorting");
+        startButton.addActionListener(e -> startSorting());
+        controls.add(startButton);
+
+        JLabel speedLabel = new JLabel("Animation Speed:");
+        controls.add(speedLabel);
+
+        speedSlider = new JSlider(50, 1000, animationSpeed);
+        speedSlider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                animationSpeed = speedSlider.getValue();
+            }
+        });
+        controls.add(speedSlider);
+
+        add(controls, BorderLayout.NORTH);
+    }
+
+    private void loadNumbersFromFile() {
+        JFileChooser fileChooser = new JFileChooser();
+        int result = fileChooser.showOpenDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            try (Scanner scanner = new Scanner(file)) {
+                numbers.clear();
+                while (scanner.hasNextLine()) {
+                    String line = scanner.nextLine().trim();
+                    if (!line.isEmpty()) {
+                        try {
+                            numbers.add(Integer.parseInt(line));
+                        } catch (NumberFormatException e) {
+                            JOptionPane.showMessageDialog(this, "Invalid number format: " + line);
+                        }
+                    }
+                }
+                System.out.println(numbers);
+                repaint();
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Error reading file.");
+            }
+        }
+    }
+
+    private void startSorting() {
+        String sortType = (String) sortTypeSelector.getSelectedItem();
+        if (sortType != null && !numbers.isEmpty()) {
+            new Thread(() -> {
+                if (sortType.equals("LSD Radix Sort")) {
+                    lsdRadixSort(numbers);
+                } else {
+                    msdRadixSort(numbers, 0);
+                }
+                JOptionPane.showMessageDialog(this, "Sorting Complete!");
+            }).start();
+        } else {
+            JOptionPane.showMessageDialog(this, "Please load numbers and select sort type.");
+        }
+    }
+
+    private void lsdRadixSort(List<Integer> numbers) {
+        int max = Collections.max(numbers);
+        int exp = 1;
+
+        while (max / exp > 0) {
+            countSort(numbers, exp);
+            exp *= 10;
+            repaint();
+            try {
+                Thread.sleep(animationSpeed);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void msdRadixSort(List<Integer> numbers, int exp) {
+        if (exp == 0) exp = (int) Math.pow(10, (int) Math.log10(Collections.max(numbers)));
+        if (exp < 1) return;
+
+        countSort(numbers, exp);
+        repaint();
+        try {
+            Thread.sleep(animationSpeed);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        int finalExp = exp;
+        List<Integer> buckets[] = new List[10];
+        for (int i = 0; i < 10; i++) buckets[i] = new ArrayList<>();
+
+        for (int num : numbers) {
+            int digit = (num / finalExp) % 10;
+            buckets[digit].add(num);
+        }
+
+        for (List<Integer> bucket : buckets) {
+            if (bucket.size() > 1) msdRadixSort(bucket, exp / 10);
+        }
+
+        numbers.clear();
+        for (List<Integer> bucket : buckets) {
+            numbers.addAll(bucket);
+        }
+    }
+
+    private void countSort(List<Integer> numbers, int exp) {
+        int[] output = new int[numbers.size()];
+        Arrays.fill(counts, 0); // Clear counts array
+
+        for (int num : numbers) {
+            int digit = (num / exp) % 10;
+            counts[digit]++;
+        }
+
+        for (int i = 1; i < 10; i++) {
+            counts[i] += counts[i - 1];
+        }
+
+        for (int i = numbers.size() - 1; i >= 0; i--) {
+            int num = numbers.get(i);
+            int digit = (num / exp) % 10;
+            output[--counts[digit]] = num;
+        }
+
+        for (int i = 0; i < numbers.size(); i++) {
+            numbers.set(i, output[i]);
+        }
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        drawNumbers(g);
+    }
+
+    private void drawNumbers(Graphics g) {
+        int width = getWidth() / Math.max(1, numbers.size());
+        int height = 50;
+
+        // Draw main numbers array
+        for (int i = 0; i < numbers.size(); i++) {
+            g.setColor(Color.CYAN);
+            g.fillRect(i * width, getHeight() / 2 - height / 2, width - 5, height);
+            g.setColor(Color.BLACK);
+            g.drawString(String.valueOf(numbers.get(i)), i * width + width / 4, getHeight() / 2 + 5);
+        }
+
+        // Draw counts array
+        int countsWidth = getWidth() / 10;
+        int countsHeight = 30;
+        int countsY = getHeight() / 2 - height - countsHeight - 50;
+
+        for (int i = 0; i < 10; i++) {
+            g.setColor(Color.LIGHT_GRAY);
+            g.fillRect(i * countsWidth, countsY, countsWidth - 5, countsHeight);
+            g.setColor(Color.BLACK);
+            g.drawString(String.valueOf(counts[i]), i * countsWidth + countsWidth / 4, countsY + countsHeight / 2);
+            g.drawRect(i * countsWidth, countsY, countsWidth - 5, countsHeight);
+        }
+
+        // Draw digit labels (0-9)
+        int labelsY = countsY + countsHeight + 15;
+        for (int i = 0; i < 10; i++) {
+            g.drawString(String.valueOf(i), i * countsWidth + countsWidth / 4, labelsY);
+        }
+    }
+}

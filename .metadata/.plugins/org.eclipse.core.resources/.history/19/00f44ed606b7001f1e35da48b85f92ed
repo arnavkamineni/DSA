@@ -1,0 +1,44 @@
+package sortLab;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.Arrays;
+
+public class RadixSortDriver {
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("Radix Sort Visualizer");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setSize(1000, 700);
+
+            RadixSortPanel visualizer = new RadixSortPanel();
+            frame.add(visualizer, BorderLayout.CENTER);
+
+            JPanel controls = new JPanel();
+            JButton lsdButton = new JButton("Start LSD Radix Sort");
+            lsdButton.addActionListener(e -> visualizer.startSorting(true));
+            JButton msdButton = new JButton("Start MSD Radix Sort");
+            msdButton.addActionListener(e -> visualizer.startSorting(false));
+
+            JSlider speedSlider = new JSlider(50, 1000, 500);
+            speedSlider.addChangeListener(e -> visualizer.setAnimationSpeed(speedSlider.getValue()));
+
+            controls.add(lsdButton);
+            controls.add(msdButton);
+            controls.add(new JLabel("Animation Speed:"));
+            controls.add(speedSlider);
+
+            frame.add(controls, BorderLayout.SOUTH);
+
+            frame.setVisible(true);
+
+            // Sample data
+            visualizer.loadNumbers(Arrays.asList(329, 457, 657, 839, 436, 720, 355));
+        });
+    }
+    
+    
+    
+}
+
+

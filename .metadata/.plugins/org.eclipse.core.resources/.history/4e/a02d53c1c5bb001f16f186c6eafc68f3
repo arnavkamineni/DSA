@@ -1,0 +1,380 @@
+package sortLab;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.*;
+import java.util.*;
+import java.util.List;
+
+public class RadixSortPanel extends JPanel {
+    private JSlider speedSlider;
+    private JComboBox<String> sortTypeSelector;
+    private JButton loadFileButton, startButton;
+    private ArrayList<Integer> numbers = new ArrayList<>();
+    private int[] counts = new int[10];
+    private int[] outputArray;
+    private int[] tempArray; // Temporary array for animation
+    private Pointer pointer;
+    private int animationSpeed = 500;
+    private boolean isLSD = true;
+    private ArrayList<Integer> highlightedIndexes = new ArrayList<>();
+    public boolean movingPtr = false;
+    private ArrayList<List<Integer>> msdBuckets;
+
+    
+    public void loadNumbersFromFile() {
+        JFileChooser fileChooser = new JFileChooser();
+        int result = fileChooser.showOpenDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            try (Scanner scanner = new Scanner(file)) {
+                numbers.clear();
+                while (scanner.hasNextLine()) {
+                    String line = scanner.nextLine().trim();
+                    if (!line.isEmpty()) {
+                        try {
+                            numbers.add(Integer.parseInt(line));
+                        } catch (NumberFormatException e) {
+                            JOptionPane.showMessageDialog(this, "Invalid number format: " + line);
+                            return;
+                        }
+                    }
+                }
+                // Initialize the outputArray when numbers are loaded
+                outputArray = new int[numbers.size()];
+                repaint();
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Error reading file.");
+            }
+        }
+    }
+
+    
+    public RadixSortPanel() {
+        setLayout(new BorderLayout());
+
+        // Controls Panel
+        JPanel controls = new JPanel();
+        controls.setLayout(new FlowLayout());
+
+        loadFileButton = new JButton("Load Numbers");
+        loadFileButton.addActionListener(e -> loadNumbersFromFile());
+        controls.add(loadFileButton);
+
+        sortTypeSelector = new JComboBox<>(new String[]{"LSD Radix Sort", "MSD Radix Sort"});
+        controls.add(sortTypeSelector);
+
+        startButton = new JButton("Start Sorting");
+        startButton.addActionListener(e -> startSorting());
+        controls.add(startButton);
+
+        JLabel speedLabel = new JLabel("Animation Speed:");
+        controls.add(speedLabel);
+
+        speedSlider = new JSlider(50, 1000, animationSpeed);
+        speedSlider.addChangeListener(e -> animationSpeed = 1000 - speedSlider.getValue());
+        controls.add(speedSlider);
+
+        add(controls, BorderLayout.NORTH);
+
+        // Initialize pointer with image
+        pointer = new Pointer("zhang.png");
+    }
+
+    private void startSorting() {
+        if (numbers.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No numbers loaded!");
+            return;
+        }
+
+        String sortType = (String) sortTypeSelector.getSelectedItem();
+        if (sortType != null) {
+            new Thread(() -> {
+                if (sortType.equals("LSD Radix Sort")) {
+                    isLSD = true;
+                    lsdRadixSort();
+                } else {
+                    isLSD = false;
+                    msdBuckets = new ArrayList<>(10);
+                    for (int i = 0; i < 10; i++) {
+                        msdBuckets.add(new ArrayList<>());
+                    }
+                    msdSort(new ArrayList<>(numbers), 2);
+                }
+
+                JOptionPane.showMessageDialog(this, "Sorting Complete!");
+            }).start();
+        }
+    }
+
+    // LSD Radix Sort
+    private void lsdRadixSort() {
+        int max = Collections.max(numbers);
+        int exp = 1;
+        outputArray = new int[numbers.size()];
+        counts = new int[10];
+
+        while (max / exp > 0) {
+            repaint();
+            sleep(animationSpeed);
+
+            Arrays.fill(counts, 0); // Reset count array
+
+            // Step 1: Populate the count array
+            for (int i = 0; i < numbers.size(); i++) {
+                movePointerTo(i, getHeight() / 3 + 50); // Point to current element
+                sleep(animationSpeed);
+
+                int digit = (numbers.get(i) / exp) % 10;
+                movePointerTo(digit, getHeight() / 2 + 50); // Move to the corresponding count index
+                sleep(animationSpeed);
+
+                counts[digit]++;
+                repaint();
+                sleep(animationSpeed);
+            }
+
+            movePointerTo(numbers.size() - 1, getHeight() / 3 + 50);
+            sleep(animationSpeed);
+
+            // Step 2: Create cumulative count array
+            for (int i = 1; i < counts.length; i++) {
+                highlightCounts(i - 1, i);
+                sleep(animationSpeed);
+                counts[i] += counts[i - 1];
+                repaint();
+                sleep(animationSpeed);
+            }
+
+            // Step 3: Populate the output array
+            for (int i = numbers.size() - 1; i >= 0; i--) {
+                movePointerTo(i, getHeight() / 3 + 50);
+                sleep(animationSpeed);
+
+                int digit = (numbers.get(i) / exp) % 10;
+                movePointerTo(digit, getHeight() / 2 + 50);
+                sleep(animationSpeed);
+
+                int pos = --counts[digit];
+                movePointerTo(pos, getHeight() * 2 / 3 + 50);
+                sleep(animationSpeed);
+
+                outputArray[pos] = numbers.get(i);
+                repaint();
+                sleep(animationSpeed);
+            }
+
+            for (int i = 0; i < outputArray.length; i++) {
+            	numbers.set(i, outputArray[i]);
+            }
+            exp *= 10;
+        }
+
+        repaint();
+    }
+
+    private void msdSort(List<Integer> numbers, int digit) {
+        if (numbers.size() <= 1 || digit < 0) {
+            return; // Base case: single-element or no more digits to process
+        }
+
+        // Initialize buckets (radix is 10 for decimal numbers)
+        List<List<Integer>> buckets = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            buckets.add(new ArrayList<>());
+        }
+
+        // Distribute numbers into buckets based on the current digit
+        for (int number : numbers) {
+            int bucketIndex = (number / (int) Math.pow(10, digit)) % 10;
+            buckets.get(bucketIndex).add(number);
+        }
+
+        // Clear the numbers list and refill it from buckets
+        numbers.clear();
+        for (List<Integer> bucket : buckets) {
+            numbers.addAll(bucket);
+        }
+
+        // Visualize the current step
+        this.numbers = new ArrayList<>(numbers); // Update the main list
+        try {
+            Thread.sleep(500); // Pause for 500ms for visualization
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        repaint(); // Trigger a repaint to display the current state
+
+        // Recurse into each bucket (important to avoid empty buckets)
+        int startIndex = 0;
+        for (List<Integer> bucket : buckets) {
+            if (!bucket.isEmpty()) {
+                msdSort(bucket, digit - 1); // Recurse into non-empty buckets
+                // Update the main list after sorting each bucket
+                for (int i = 0; i < bucket.size(); i++) {
+                    numbers.set(startIndex + i, bucket.get(i));
+                }
+                startIndex += bucket.size();
+
+                // Redraw after each bucket is sorted
+                this.numbers = new ArrayList<>(numbers);
+                try {
+                    Thread.sleep(500); // Pause for better visualization
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                repaint();
+            }
+        }
+    }
+
+
+    // Move pointer to a specific index
+    private void movePointerTo(int index, int yPosition) {
+        if (pointer != null) {
+            int xPosition = index * getWidth() / Math.max(numbers.size(), 1);
+            pointer.animateTo(xPosition, yPosition, 10, this::repaint);
+        }
+    }
+
+    // Sleep for animation speed
+    private void sleep(int milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    
+    private void highlightCounts(int firstIndex, int secondIndex) {
+        // Avoid potential issues if index is out of bounds
+        if (firstIndex < 0 || firstIndex >= counts.length || secondIndex < 0 || secondIndex >= counts.length)
+            return;
+
+        // Add the indexes to the highlightedIndexes list (only 2 for now)
+        highlightedIndexes.clear(); // Clear any previous highlights
+        highlightedIndexes.add(firstIndex);
+        highlightedIndexes.add(secondIndex);
+        
+        // Request a repaint so the new highlights are drawn
+        repaint();
+        sleep(animationSpeed); // Pause to show the effect
+
+        // Clear the highlighted indexes after the drawing step
+        highlightedIndexes.clear();
+        repaint(); // Repaint after clearing highlights to remove them
+        sleep(animationSpeed); // Pause for a brief moment before continuing
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        int width = getWidth() / Math.max(numbers.size(), 1);
+        int height = 50;
+
+     // Original array
+        for (int i = 0; i < numbers.size(); i++) {
+            g.setColor(Color.CYAN);
+            g.fillRect(i * width, getHeight() / 3 - height / 2, width - 5, height);
+            
+            g.setColor(Color.BLACK);
+            // Draw value
+            g.drawString(String.valueOf(numbers.get(i)), i * width + width / 4, getHeight() / 3);
+
+            // Draw index
+            g.drawString(String.valueOf(i), i * width + width / 4, getHeight() / 3 + 20);
+            
+            // Draw a line above the index
+            int xStart = i * width;
+            int yLine = getHeight() / 3 + 10; // Adjust the height of the line
+            g.drawLine(xStart, yLine, xStart + width - 5, yLine);
+        }
+
+        // Draw count or bucket information
+        if (isLSD) {
+            drawNumbers(g);
+            drawHighlightedCounts(g);
+        } else {
+            for (int i = 0; i < msdBuckets.size(); i++) {
+                g.setColor(Color.ORANGE);
+                int y = getHeight() / 2 + i * (height + 10);
+                for (int j = 0; j < msdBuckets.get(i).size(); j++) {
+                    g.fillRect(j * width, y - height / 2, width - 5, height);
+                    g.setColor(Color.BLACK);
+                    g.drawString(String.valueOf(msdBuckets.get(i).get(j)), j * width + width / 4, y);
+                }
+            }
+        }
+
+        pointer.draw(g);
+    }
+
+    private void drawHighlightedCounts(Graphics g) {
+        if (!highlightedIndexes.isEmpty()) {
+            int width = getWidth() / 20;  // Width of each count box
+            int yPosition = getHeight() / 2;  // Y position of the count boxes
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.setColor(Color.RED);  // Red color for highlighting
+            g2d.setStroke(new BasicStroke(3));  // Thick red outline for highlighting
+
+            // Only draw the highlighted boxes
+            for (int index : highlightedIndexes) {
+                g2d.drawRect(index * width, yPosition - 15, width - 5, 30);  // Draw the box
+            }
+//            g2d.dispose();  // Clean up the graphics context
+        }
+    }
+
+    
+    
+
+
+    private void drawNumbers(Graphics g) {
+        int width = getWidth() / Math.max(numbers.size(), 1);
+        int height = 50;
+
+
+        // Count sort array
+        int yPosition = getHeight() / 2;
+        for (int i = 0; i < counts.length; i++) {
+            g.setColor(Color.LIGHT_GRAY);
+            g.fillRect(i * width, yPosition - height / 2, width - 5, height);
+            
+            g.setColor(Color.BLACK);
+            // Draw count value
+            g.drawString(String.valueOf(counts[i]), i * width + width / 4, yPosition);
+            
+            // Draw index
+            g.drawString(String.valueOf(i), i * width + width / 4, yPosition + 20);
+            
+            // Draw a line above the index
+            int xStart = i * width;
+            int yLine = yPosition + 10;
+            g.drawLine(xStart, yLine, xStart + width - 5, yLine);
+        }
+
+        // Output array
+        yPosition = getHeight() * 2 / 3;
+        if (outputArray == null) return;
+
+        for (int i = 0; i < outputArray.length; i++) {
+            g.setColor(Color.ORANGE);
+            g.fillRect(i * width, yPosition - height / 2, width - 5, height);
+            
+            g.setColor(Color.BLACK);
+            // Draw output value
+            g.drawString(String.valueOf(outputArray[i]), i * width + width / 4, yPosition);
+            
+            // Draw index
+            g.drawString(String.valueOf(i), i * width + width / 4, yPosition + 20);
+            
+            // Draw a line above the index
+            int xStart = i * width;
+            int yLine = yPosition + 10;
+            g.drawLine(xStart, yLine, xStart + width - 5, yLine);
+        }
+    }
+
+}

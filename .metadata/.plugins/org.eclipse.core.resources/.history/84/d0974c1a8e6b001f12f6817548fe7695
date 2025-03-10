@@ -1,0 +1,56 @@
+package unit1;
+
+public class Websites {
+	String sites[];
+	int size;
+	
+	public Websites() {
+		super();
+		sites = new String[4];
+		sites[0] = "www.google.com";
+		size = 1;
+	}
+	
+	public void push(String s) {
+		if (size >= sites.length) {
+			makeRoom();
+		}
+		sites[size++] = s;
+	}
+	
+	public String peek() {
+		return size > 0 ? sites[size-1] : null; 
+	}
+	
+	public String pop() {
+		return size > 0 ? (sites[--size]) : null;
+	}
+	
+	private void makeRoom() {
+		String temp[] = new String[size*2];
+		for (int i = 0; i < size; i ++) {
+			temp[i] = sites[i];
+		}
+		sites = temp;
+	}
+	
+	public int size() {
+		return size;
+	}
+
+	public boolean isEmpty() {
+		return size <= 0;
+	}
+	
+	private void removeRoom() {
+		if (size < sites.length/4) {
+			String temp[] = new String[size/2];
+			for (int i = 0; i < size; i++) {
+				temp[i] = sites[i];
+			}
+			sites = temp;
+		}
+			
+			
+	}
+}

@@ -1,0 +1,19 @@
+package dp;
+
+public class DP {
+	
+	public static void main(String[] args) {
+		
+	}
+	
+	public static long prime(int n) {
+		int[] memo = new int[n+1];
+		return primeH(n, memo);
+	}
+	
+	private static long primeH(int n, int[] memo) {
+		if (memo[n] != 0) {
+			return memo[n];
+		}
+	}
+}

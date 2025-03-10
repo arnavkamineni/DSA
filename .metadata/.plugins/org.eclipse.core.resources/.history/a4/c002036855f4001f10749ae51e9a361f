@@ -1,0 +1,26 @@
+package hape;
+
+import java.util.ArrayList;
+
+public class Triage {
+	ArrayList<Injury> injuries;
+	
+	public Triage(ArrayList<Injury> inj) {
+		injuries = inj;
+	}
+	
+	public Injury findMin() {
+		return injuries.isEmpty() ? null : injuries.get(0);
+	}
+	
+	public Injury getleft(int i) {
+		return (2*i)<injuries.size() ? injuries.get(2*i+1) : null;
+	}
+	
+	
+	public Injury getLeft(Injury inj) {
+		int spot = injuries.indexOf(inj);
+		return spot > -1? getLeft(spot):null;
+	}
+	
+}

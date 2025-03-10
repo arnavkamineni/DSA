@@ -1,0 +1,30 @@
+package tree;
+
+public class TNode {
+	Integer value;
+	TNode left, right;
+	public TNode(Integer val) {
+		value = val;
+	}
+	
+	public TNode(Integer value, TNode left, TNode right) {
+		super();
+		this.value = value;
+		this.left = left;
+		this.right = right;
+	}
+	
+	public void addNode(TNode tn) {
+		if(tn.value < this.value) {
+			if (this.left == null) {
+				this.left = tn;
+			} else {
+				this.left.addNode(tn);
+			}
+		} else if(tn.value > this.value) {
+			if (tn.value > this.value) {
+				
+			}
+		}
+	}
+}

@@ -1,0 +1,38 @@
+package dp;
+
+import java.util.HashMap;
+
+public class Dynamic {
+	public static HashMap<Integer, Long> memo = new HashMap<Integer, Long>();
+
+	public static void main(String[] args) {
+		memo.put(1, (long) 0);
+		memo.put(2, (long) 1);
+		System.out.println(fibGood(10));
+	};
+	  
+
+	
+	public static long fibGood(int n) {
+		for (int i = 1; i <= n; i++) {
+
+			if (memo.get(i) == null) {
+				memo.put(i, memo.get(i-1) + memo.get(i-2));
+			}
+		}
+		return memo.get(n);
+	}
+	
+	public static int coinCount(int[] denom, int total) {
+		if (total < 0) {
+			return 0;
+		}
+		if (total == 0) {
+			return 0;
+		}
+		int count = 0;
+		for(int coin : denom) {
+			count += coinCount(denom, total-coin);
+		}
+	}
+}

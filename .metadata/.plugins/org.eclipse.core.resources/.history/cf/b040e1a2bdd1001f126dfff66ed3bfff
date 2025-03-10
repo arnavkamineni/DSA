@@ -1,0 +1,61 @@
+package dp;
+
+import java.util.ArrayList;
+
+public class DP {
+	
+	public static void main(String[] args) {
+		System.out.println(prime(100000));
+	}
+	
+	public static long prime(int n) {
+		ArrayList<Long> memo = new ArrayList<Long>();
+		memo.add((long) 2);
+		
+		return primeH(n, memo);
+	}
+	
+	private static long primeH(int n, ArrayList<Long> memo) {
+		if (n < memo.size() ) {
+			return memo.get(n);
+		}
+		long num = memo.get(memo.size() - 1) + 1;
+		
+		while ( n >= memo.size()) {
+			boolean isPrime = true;;
+			for (Long prime : memo) {
+				double sqrtNum = Math.sqrt(num);
+				if (prime > sqrtNum) {
+					break;
+				}
+				if (num % prime == 0) {
+					isPrime = false;
+				}
+				
+				
+			}
+			if (isPrime) {
+				memo.add(num);
+			}
+			num++;
+		}
+		return memo.get(n - 1);
+	}
+	
+	public static int longestCollatz(int n) {
+		int max_num = Integer.MIN_VALUE;
+		int memo[] = new int[n+1];
+		for( int i = 0; i < n; i++ ) {
+			max_num = Math.max(max_num, LCH(i, memo));
+		}
+		return max_num;
+	}
+	
+	private static int LCH(int n, int[] memo) {
+		if (memo[n] != 0) {
+			return memo[n];
+		} else {
+			
+		}
+	}
+}

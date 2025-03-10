@@ -1,0 +1,13 @@
+package tree;
+
+public class Forest {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		TNode oak = new TNode(20);
+		int arr[] = new int[] {15, 17, 14, 30, 21, 1};
+		
+		
+	}
+
+}

@@ -1,0 +1,6 @@
+package lab;
+
+public class CarMap {
+	Entry[] hashTable;
+	public static final int defaultCapacity = 10;
+}

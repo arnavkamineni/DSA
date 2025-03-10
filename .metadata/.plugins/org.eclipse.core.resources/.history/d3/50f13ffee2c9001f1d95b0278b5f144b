@@ -1,0 +1,82 @@
+package dp;
+
+import java.util.HashMap;
+
+
+
+public class Dynamo {
+
+	static HashMap<Integer, Long> memo = new HashMap<Integer, Long>();
+
+	static HashMap<Integer, Integer> memo2 = new HashMap<Integer, Integer>();
+
+	public static void main(String[] args) {
+
+		// TODO Auto-generated method stub
+
+		System.out.println(coinCount(new int[] {1, 5, 10, 25}, 34));
+		System.out.println(2, 7);
+
+	}
+
+	
+
+	public static long fib(int n) {
+
+		if (n <= 2) return 1;
+
+		if (memo.containsKey(n))
+
+			return memo.get(n);
+
+		memo.put(n, fib(n-1) + fib(n-2));
+
+		return memo.get(n);
+
+	}
+
+	
+
+	public static int coinCount(int[] denom, int total) {
+
+		if (total == 0)
+
+			return 0;
+
+		if (total < Integer.MAX_VALUE)
+
+			return 0;
+
+		if (memo2.containsKey(total))
+
+			return memo2.get(total);
+
+		int count = 0;
+
+		memo2.put(total, count);
+
+		for (int coin: denom) {
+
+			count+=coinCount(denom, total-coin);
+
+		}
+
+	
+
+		return count;
+
+	}
+
+	
+
+	public static int diceCountD(int dice, int target) {
+		if (dice == 0 && target == 0) { return 1; }
+		if (target <= 0) { return 0; }
+		if (dice <= 0) { return 0; }
+		int count = 0;
+		for (int i = 1; i <= 6; i++)
+			count += diceCountD(dice - 1, target - i);
+		return count;
+	}
+
+}

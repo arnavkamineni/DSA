@@ -1,0 +1,23 @@
+package hape;
+
+public class Injury implements Comparable<Injury>{
+	String ailment;
+	int priority;
+	public Injury(String ailment, int priority) {
+		super();
+		this.ailment = ailment;
+		this.priority = priority;
+	}
+	public Injury() {
+		ailment = "Broken heart";
+		priority = 0;
+	}
+	
+
+	@Override
+	public int compareTo(Injury o) {
+		// TODO Auto-generated method stub
+		return this.priority - o.priority;
+	}
+	
+}

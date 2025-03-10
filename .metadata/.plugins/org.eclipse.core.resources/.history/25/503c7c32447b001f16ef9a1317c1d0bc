@@ -1,0 +1,34 @@
+package linkyListy; 
+
+import java.util.LinkedList;
+
+public class Link {
+
+	public static void main(String[] args) {
+		
+		LinkedList<String> presidents = new LinkedList<String>();
+		presidents.add("George Washington");
+		presidents.add("John Adams");
+		presidents.add("Thomas Jefferson");
+		presidents.add("James Madison");
+		for(String s:presidents) {
+			System.out.println(s);
+		}
+		presidents.add(0, "James Monroe");
+		for(String s:presidents) {
+			System.out.println(s);
+		}
+		Track t1 = new Track("Yellow Sub","Beatles",169, null);
+		Track t2 = new Track("Northern Song","Beatles",208, null);
+		Track t3 = new Track("All Together Now","Beatles",134, null);
+		Track t4 = new Track("Skibidi Toilet","ARNAV",69, null);
+		Playlist Yellow = new Playlist(t1);
+		System.out.println();
+		Yellow.addTrack(t3);
+		Yellow.addAfterTrack(t1, t2);
+		Yellow.addAfterTrack(t3, t4);
+		System.out.println(Yellow.toString());
+		Yellow.addTrack(t3);
+	}
+	
+}

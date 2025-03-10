@@ -1,0 +1,22 @@
+package dp;
+
+import java.util.HashMap;
+
+public class Dynamic {
+	public static HashMap<Integer, Long> memo = new HashMap<Integer, Long>();
+
+	public static void main(String[] args) {
+		memo.put(1, (long) 0);
+		memo.put(2, (long) 1);
+		mem
+	};
+	  
+
+	
+	public static long fibGood(int n) {
+		if (memo.get(n) == null) {
+			memo.put(n, memo.get(n-1) + memo.get(n-2));
+		}
+		return memo.get(n);
+	}
+}

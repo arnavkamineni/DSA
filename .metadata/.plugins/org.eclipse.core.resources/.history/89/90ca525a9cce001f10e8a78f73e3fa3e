@@ -1,0 +1,193 @@
+package dp;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public class Dynamo {
+	static HashMap<Integer, Long> memo = new HashMap<Integer, Long>();
+	static HashMap<Integer, Integer> memo2 = new HashMap<Integer, Integer>();
+	static int dumbDiceCount;
+	static int smartDiceCount;
+	static int knapDumb = 0;
+	static int knapSmart = 0;
+	public static void main(String[] args) {
+		//System.out.println(coinCount(new int[] { 1, 5, 10, 25 }, 34));
+		System.out.println(diceCountD(8,24));
+		System.out.println(diceCountM(8,24));
+		System.out.println(dumbDiceCount);
+		System.out.println(smartDiceCount);
+		
+		int[][] diceTable = new int[9][25];
+		for(int i=1;i<7;i++) {
+			diceTable[1][i]=1;
+		}
+		for(int dice=2; dice<9; dice++) {
+			for(int target=1; target<25; target++) {
+				for(int i=1; i<=6; i++) {
+					if(target-i>=0)
+						diceTable[dice][target] += diceTable[dice-1][target-i];
+				}
+			}
+		}
+		System.out.println(diceTable[8][24]);
+		System.out.println(newton(4,1000));
+		double[] values = {100,200,50,300,400,25};
+		double[] weights = {3,5,10,1,2,1};
+		System.out.println(knapsack(values,weights,10));
+		System.out.println(knapDumb);
+		System.out.println(knapSmart(values, weights, 10, 0, 0));
+		System.out.println(knapSmart);
+		
+		System.out.println(catalan(7));
+		System.out.println(catalanDP(7));;
+	}
+	
+	public static double knapsack(double[] vals, double[] ws, double cap) {
+		return knapsack(vals,ws,cap,0,0);
+	}
+	public static double knapsack(double[] vals, double[] ws, double cap, int i, double max) {
+		knapDumb++;
+		if(i==vals.length)
+			return max;
+		double with=0;
+		if(ws[i]<=cap)
+			with = knapsack(vals, ws, cap-ws[i], i+1, max+vals[i]);
+		double without = knapsack(vals, ws, cap, i+1, max);
+		return Math.max(with, without);
+	}
+	public static double knapSmart(double[] vals, double[] ws, double cap, int i, double max) {
+		double[][] memo = new double[ws.length][(int)cap+1];
+		for(int row=0; row<memo.length;row++) 
+			for(int col = 0; col<memo[row].length;col++) 
+				memo[row][col] = -1;
+		return knapSmart(vals,ws,cap,i,max,memo);
+	}
+	public static double knapSmart(double[] vals, double[] ws, double cap, int i, double max, double[][] memo) {
+		knapSmart++;
+		if(i==vals.length)
+			return max;
+		if (memo[i][(int)cap] > -0.9)
+			return memo[i][(int)cap];
+		double with=0;
+		if(ws[i]<=cap)
+			with = knapSmart(vals, ws, cap-ws[i], i+1, max+vals[i], memo);
+		double without = knapSmart(vals, ws, cap, i+1, max, memo);
+		memo[i][(int)cap] = Math.max(with, without);
+		return memo[i][(int)cap]; 
+	}
+	
+	private static double function(double x) {
+        return Math.sin(x);
+    }
+
+    private static double derivative(double x) {
+        return Math.cos(x);
+    }
+	
+	public static double newton(double x, int i) {
+		if(i==0) {
+			return Double.POSITIVE_INFINITY;
+		}
+		if(Math.abs(function(x)-0)<.0000000000001) {
+			return x;
+		}
+		double xn = x - (function(x)/derivative(x));
+		return newton(xn, i-1);
+	}
+
+	public static long fib(int n) {
+		if (n <= 2)
+			return 1;
+		if (memo.containsKey(n))
+			return memo.get(n);
+		memo.put(n, fib(n - 1) + fib(n - 2));
+		return memo.get(n);
+	}
+
+	public static int coinCount(int[] denom, int total) {
+		if (total == 0)
+			return 0;
+		if (total < Integer.MAX_VALUE)
+			return 0;
+		if (memo2.containsKey(total))
+			return memo2.get(total);
+		int count = 0;
+		memo2.put(total, count);
+		for (int coin : denom) {
+			count += coinCount(denom, total - coin);
+		}
+		return count;
+	}
+
+	public static int diceCountD(int dice, int target) {
+		dumbDiceCount++;
+		if(dice==0&&target==0) 
+			return 1;
+		if(target<=0||dice<=0)
+			return 0;
+		int count = 0;
+		for(int i=1;i<7;i++)
+			count+= diceCountD(dice-1,target-i);
+		return count;
+	}
+	public static int diceCountM(int dice, int target) {
+		int[][] memoT = new int[dice+1][target+1];
+		return diceCountM(dice,target,memoT);
+	}
+	public static int diceCountM(int dice, int target, int[][] memoT) {
+		smartDiceCount++;
+		if(dice==0&&target==0) 
+			return 1;
+		if(target<=0||dice<=0)
+			return 0;
+		if(memoT[dice][target]!=0) 
+			return memoT[dice][target];
+		int count = 0;
+		for(int i=1; i<7; i++)
+			count+= diceCountM(dice-1,target-i,memoT);
+		memoT[dice][target] = count;
+		return count;
+	}
+	
+	
+	public static int catalan(int n) {
+		
+		if (n == 0 || n == 1) {
+			return 1;
+		}
+		int sum = 0;
+		for (int k = 1; k < n; k++) {
+			sum += catalan(k)*catalan(n-k);
+		}
+		return sum;
+	}
+	
+	public static int catalanDP(int n) {
+		int memo[] = new int[n+1];
+		memo[0] = 1;
+		memo[1]= 1;
+		return catalanDP(n, memo);
+	}
+	
+	public static int catalanDP(int n, int memo[]) {
+		int sum = 0;
+		for (int k = 1; k < n; k++) {
+			if (memo[k] == 0) {
+				memo[k] = catalanDP(k, memo);
+			} else if (memo[n-k] == 0) {
+				memo[n-k] = catalanDP(n-k, memo);
+			}
+			sum += memo[k]*memo[n-k];
+		}
+		return sum;
+	}
+	
+	public static int LCS() {
+		ArrayList<String> subs = ;
+	}
+	
+	public static ArrayList (String s) {
+		ArrayList<String> out = new ArrayList<String>();
+		return out;
+	}
+}

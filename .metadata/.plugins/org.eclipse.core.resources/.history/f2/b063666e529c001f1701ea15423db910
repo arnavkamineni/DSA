@@ -1,0 +1,11 @@
+package lab;
+
+public class Key {
+	String key;
+
+	public Key(String key) {
+		super();
+		this.key = key;
+	}
+	
+}

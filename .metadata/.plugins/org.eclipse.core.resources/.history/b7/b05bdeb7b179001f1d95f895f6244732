@@ -1,0 +1,6 @@
+package linkyListy;
+
+public class Playlist {
+	Track intro;
+	Track current;
+}

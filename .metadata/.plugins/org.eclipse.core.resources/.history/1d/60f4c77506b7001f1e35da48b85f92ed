@@ -1,0 +1,171 @@
+package sortLab;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class RadixSortPanel extends JPanel {
+    private final List<Integer> numbers = new ArrayList<>();
+    private final List<List<Integer>> buckets = new ArrayList<>();
+    private final Timer timer;
+    private int animationSpeed = 500; 
+    private boolean sorting = false;
+
+    public RadixSortPanel() {
+        setLayout(null);
+
+        // Initialize buckets
+        for (int i = 0; i < 10; i++) {
+            buckets.add(new ArrayList<>());
+        }
+
+        // Animation Timer
+        timer = new Timer(animationSpeed, e -> repaint());
+    }
+    
+
+    public void setAnimationSpeed(int speed) {
+        this.animationSpeed = speed;
+        timer.setDelay(animationSpeed);
+    }
+
+    public void startSorting(boolean isLSD) {
+        if (numbers.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No numbers loaded!");
+            return;
+        }
+        sorting = true;
+
+        new Thread(() -> {
+            if (isLSD) {
+                lsdRadixSort();
+            } else {
+                msdRadixSort(numbers, getMaxDigits() - 1);
+            }
+            sorting = false;
+            JOptionPane.showMessageDialog(this, "Sorting complete!");
+        }).start();
+    }
+
+    public void loadNumbers(List<Integer> newNumbers) {
+        numbers.clear();
+        numbers.addAll(newNumbers);
+        repaint();
+    }
+
+    private void lsdRadixSort() {
+        int maxDigits = getMaxDigits();
+        for (int exp = 1, digitPlace = 0; digitPlace < maxDigits; exp *= 10, digitPlace++) {
+            distributeToBucketsLSD(exp);
+            animateBuckets();
+            collectFromBuckets();
+            pauseAnimation();
+        }
+    }
+
+    private void distributeToBucketsLSD(int exp) {
+        for (int num : numbers) {
+            int digit = (num / exp) % 10;
+            buckets.get(digit).add(num);
+        }
+    }
+
+    private void collectFromBuckets() {
+        numbers.clear();
+        for (List<Integer> bucket : buckets) {
+            numbers.addAll(bucket);
+            bucket.clear();
+        }
+    }
+
+    private void msdRadixSort(List<Integer> subList, int digitPlace) {
+        if (subList.size() <= 1 || digitPlace < 0) {
+            return;
+        }
+        distributeToBucketsMSD(subList, digitPlace);
+        animateBuckets();
+        subList.clear();
+        for (int i = 0; i < 10; i++) {
+            msdRadixSort(buckets.get(i), digitPlace - 1);
+            subList.addAll(buckets.get(i));
+            buckets.get(i).clear();
+        }
+        pauseAnimation();
+    }
+
+    private void distributeToBucketsMSD(List<Integer> subList, int digitPlace) {
+        int exp = (int) Math.pow(10, digitPlace);
+        for (int num : subList) {
+            int digit = (num / exp) % 10;
+            buckets.get(digit).add(num);
+        }
+    }
+
+    private int getMaxDigits() {
+        int max = Collections.max(numbers);
+        return (int) Math.log10(max) + 1;
+    }
+
+    private void animateBuckets() {
+        repaint();
+        try {
+            Thread.sleep(animationSpeed * 2);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    private void pauseAnimation() {
+        try {
+            Thread.sleep(animationSpeed);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        if (sorting) {
+            drawBuckets(g);
+        } else {
+            drawNumbers(g, numbers, getHeight() / 2 - 50);
+        }
+    }
+
+    private void drawNumbers(Graphics g, List<Integer> numbers, int yPosition) {
+        int width = getWidth() / Math.max(1, numbers.size());
+        int height = 50;
+
+        for (int i = 0; i < numbers.size(); i++) {
+            g.setColor(Color.CYAN);
+            g.fillRect(i * width, yPosition, width - 5, height);
+            g.setColor(Color.BLACK);
+            g.drawString(String.valueOf(numbers.get(i)), i * width + width / 4, yPosition + height / 2);
+        }
+    }
+
+    private void drawBuckets(Graphics g) {
+        int bucketWidth = getWidth() / 10;
+        int bucketHeight = 50;
+        int bucketStartY = getHeight() / 2 + 50;
+
+        for (int i = 0; i < 10; i++) {
+            int x = i * bucketWidth;
+            g.setColor(Color.GRAY);
+            g.drawRect(x, bucketStartY, bucketWidth, bucketHeight);
+
+            List<Integer> bucket = buckets.get(i);
+            for (int j = 0; j < bucket.size(); j++) {
+                int y = bucketStartY + (j + 1) * (bucketHeight + 5);
+                g.setColor(Color.CYAN);
+                g.fillRect(x + 5, y, bucketWidth - 10, bucketHeight);
+                g.setColor(Color.BLACK);
+                g.drawString(String.valueOf(bucket.get(j)), x + bucketWidth / 4, y + bucketHeight / 2);
+            }
+        }
+    }
+}

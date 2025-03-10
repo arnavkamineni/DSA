@@ -1,0 +1,128 @@
+package linkyListy;
+
+public class Playlist {
+
+	Track intro;
+	Track current;
+	public Playlist() {
+		intro = new Track("Intro","link",60,null);
+		current = intro;
+	}
+	public Playlist(Track i) {
+		if (!(i == null)) {
+			intro = i; current = i;
+		}
+		;
+	}
+	public void addTrack(Track t) {
+		Track runner = current;
+		if(current == null) {
+			intro = t; current = t;
+			return;
+		} 
+		while(runner.next != null) {
+			runner = runner.next;
+		}
+		runner.next = t;
+	}
+	public boolean addAfterTrack(Track target, Track t) {
+		if(intro == null)
+			return false;
+		Track runner = intro;
+		while(runner!=null&&!runner.equals(target)) 
+			runner = runner.next;
+		if(runner==null)
+			return false;
+		t.next = runner.next;
+		runner.next = t;
+		return true;
+	}
+	
+	public Track remove() {
+		return remove(current);
+	}
+	
+	public Track remove(Track t) {
+		if(t == null)
+			return null;
+		
+		Track runner = intro;
+		
+		if (t.equals(intro)) {
+			intro = intro.next;
+			if (current != null && current.equals(intro)) {
+				current = current.next;
+			}
+			t.next = null;
+			return t;
+		}
+	
+		
+		while (runner.next != null && !runner.next.equals(t)) {
+			runner = runner.next;
+		}
+		if (runner.next == null)
+			return null;
+		else {
+			runner.next = runner.next.next;
+			if(current.equals(t)) {
+				current = current.next == null ? intro:current.next;
+			}
+		}
+		t.next = null;
+		return t;
+		
+	}
+	
+	public String playSong() {
+		if (current == null) {
+			return "Buy sum sgons";
+		}
+		String out = current.title + ", " + current.artist + ": " + current.duration;
+		current = current.next;
+		if (current == null) {
+			current = intro;
+		}
+		return out;
+	}
+	
+	public void shuffle() {
+		if (intro == null) {
+			return;
+		}
+		
+		Track runner = intro;
+		int size = 0;
+		while(runner!=null) {
+			runner=runner.next;
+			size++;
+		}
+		
+		System.out.println(size);
+		for (int i = 0;i<size;i++) {
+			int random = (int)(Math.random()*size);
+			runner = intro;
+			for (int j = 0; j < random; j++) {
+				runner = runner.next;
+			}
+			addTrack(remove(runner));
+		}
+		
+		
+//		for (int )
+	}
+	
+	public String toString() {
+		String output="";
+		if(intro == null) {
+			return "YOU SUCK";
+		}
+		Track runner = intro;
+		while (runner!= null) {
+			output += runner.title + ", " + runner.artist+": "+runner.duration+"\n";
+			runner = runner.next;
+		}
+		return output;
+	}
+	
+}

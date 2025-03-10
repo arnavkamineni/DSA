@@ -1,0 +1,81 @@
+package dp;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public class DP {
+	
+	public static void main(String[] args) {
+//		System.out.println(prime(100000));
+		System.out.println(longestCollatz(5));
+	}
+	
+	public static long prime(int n) {
+		ArrayList<Long> memo = new ArrayList<Long>();
+		memo.add((long) 2);
+		
+		return primeH(n, memo);
+	}
+	
+	private static long primeH(int n, ArrayList<Long> memo) {
+		if (n < memo.size() ) {
+			return memo.get(n);
+		}
+		long num = memo.get(memo.size() - 1) + 1;
+		
+		while ( n >= memo.size()) {
+			boolean isPrime = true;;
+			for (Long prime : memo) {
+				double sqrtNum = Math.sqrt(num);
+				if (prime > sqrtNum) {
+					break;
+				}
+				if (num % prime == 0) {
+					isPrime = false;
+				}
+				
+				
+			}
+			if (isPrime) {
+				memo.add(num);
+			}
+			num++;
+		}
+		return memo.get(n - 1);
+	}
+	
+	public static int longestCollatz(int n) {
+		int max_num = Integer.MIN_VALUE;
+		int[] memo = new int [n+1];
+		for (int i = 0; i < n+1; i++) {
+			memo[i] = -1;
+		}
+		memo[1] = 0;
+		
+		for( int i = 1; i < n+1; i++ ) {
+			max_num = Math.max(max_num, LCH(i, memo, 0)); //get the maximum length for all numbers in range 1 - n
+		}
+		return max_num;
+	}
+	
+	private static int LCH(int n, int[] memo, int i) {
+		if (memo[n] > -1) {
+			return memo[n]; //length of chain n
+		} else {
+			if (n % 2 == 0) {
+				//even case
+				int new_n = n/2;
+				memo[n] = LCH(new_n, memo, i+1);
+				// length of n is 1 + the rest
+				return memo[n];
+				// store for future use
+			} else {
+				int new_n = 3*n + 1; //odd case
+				memo[n] = LCH(new_n, memo, i + 1);
+				// length of n is 1 + the rest
+				return memo[n];
+				// store for future use
+			}
+		}
+	}
+}

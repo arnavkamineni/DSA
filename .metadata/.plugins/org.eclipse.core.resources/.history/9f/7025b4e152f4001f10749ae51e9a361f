@@ -1,0 +1,11 @@
+package hape;
+
+public class Injury {
+	String ailment;
+	int priority;
+	public Injury(String ailment, int priority) {
+		super();
+		this.ailment = ailment;
+		this.priority = priority;
+	}
+}

@@ -1,0 +1,11 @@
+package hardExercise;
+
+public class CircularLinkedLists {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Chain chain = new Chain(5, 4, 2);
+		System.out.println(chain);
+	}
+
+}

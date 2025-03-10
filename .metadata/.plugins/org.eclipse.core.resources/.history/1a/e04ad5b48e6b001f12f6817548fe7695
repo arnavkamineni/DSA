@@ -1,0 +1,71 @@
+package unit1;
+
+import java.util.Iterator;
+import java.util.Stack;
+
+public class Stacks {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+//		Stack<Integer> st = new Stack<Integer>();
+//		st.push(3); st.push(4); st.push(5);
+//		System.out.println(st.toString());
+//		System.out.println(st.peek());
+//		System.out.println(st.pop());
+//		for (int i = 0; i < 10; i++) {
+//			st.push((int) (Math.random()*10));
+//		}
+//		System.out.println(st);
+//		System.out.println(removeEven(st));
+//		System.out.println(st);
+//		System.out.println(isPalindrome("ABCBBA"));
+		// All collections MUST be iterable with a for each loop
+//		Iterator<Integer> itr = st.iterator();
+		
+		String sites[] = new String[3];
+		sites[0] = "duckduckgo.com";
+		sites[1] = "reuters.com";
+		sites[2] = "glastonburyus.org";
+		Websites webs = new Websites();
+		for (String s: sites) {
+			webs.push(s);
+		}
+	}
+	
+	public static int removeEven(Stack<Integer> st) {
+		Stack<Integer> OddSt = new Stack<Integer>();
+		int count = st.size();
+		while (!st.isEmpty()) {
+			
+			if (st.peek()%2 == 1) {
+				OddSt.push(st.pop());
+			} else {
+				st.pop();
+			}
+			
+		}
+		count -= OddSt.size();
+		while (!OddSt.isEmpty()) {
+			st.push(OddSt.pop());
+		}
+		return count;
+	}
+	
+	public static boolean isPalindrome(String s) {
+		Stack<Character> temp = new Stack<Character>();
+		
+		for (int i = 0; i < s.length(); i++) {
+			if (i<s.length()/2) {
+				temp.push(s.charAt(i));
+			} else if (s.length()%2 == 1 && i==s.length()/2) {
+				continue;
+			} else {
+				if (s.charAt(i) != temp.pop()) {
+					return false;
+				}
+			}
+		}
+		return true;
+		
+	}
+}

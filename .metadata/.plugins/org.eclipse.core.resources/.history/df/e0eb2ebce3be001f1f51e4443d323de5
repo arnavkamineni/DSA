@@ -1,0 +1,8 @@
+package dp;
+
+import java.util.HashMap;
+
+public class Dynamic {
+	HashMap<Integer, Integer> memo;
+	
+}

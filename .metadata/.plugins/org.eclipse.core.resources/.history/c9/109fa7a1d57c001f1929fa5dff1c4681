@@ -1,0 +1,10 @@
+package hardExercise;
+
+public class LinkExercise {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Node one = new Node();
+	}
+
+}

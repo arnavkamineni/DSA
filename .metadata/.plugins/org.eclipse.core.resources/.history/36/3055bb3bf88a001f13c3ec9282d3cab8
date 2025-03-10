@@ -1,0 +1,20 @@
+package hardExercise;
+
+public class Chain {
+	Node<Integer> head, tail;
+	public Chain(int start, int count, int step) {
+		head = new Node<Integer>(start, null);
+		Node<Integer>runner = head;
+		int size = 1;
+		for (int i = 0; i < count; i++) {
+			runner.next = new Node<Integer>(runner.data+step, null);
+			runner=runner.next;
+		}
+		tail = runner;
+		tail.next = head;
+	}
+	
+	public String toString() {
+		
+	}
+}

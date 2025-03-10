@@ -1,0 +1,5 @@
+package hardExercise;
+
+public class LinkStack<T> {
+	Node<T> top;
+}

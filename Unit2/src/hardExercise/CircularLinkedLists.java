@@ -1,0 +1,21 @@
+package hardExercise;
+
+public class CircularLinkedLists {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Chain chain = new Chain(5, 4, 2);
+		System.out.println(chain);
+		Chain gold = new Chain();
+		gold.addNode(0,  0);
+		System.out.println(gold);
+		gold.addNode(2,  1);
+		System.out.println(gold);
+		gold.addNode(6,  0);
+		System.out.println(gold);
+		System.out.println(gold);
+		chain.remove(0);
+		System.out.println(chain);
+	}
+
+}

@@ -1,0 +1,5 @@
+package hardExercise;
+
+public class Chain<Integer> {
+	Node<Integer> head, tail;
+}

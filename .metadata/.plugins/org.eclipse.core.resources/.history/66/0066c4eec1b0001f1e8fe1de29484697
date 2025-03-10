@@ -1,0 +1,11 @@
+package sorts;
+
+public class Chocula {
+	int[] numbers;
+
+	public Chocula(int size, int max) {
+		super();
+		this.numbers = numbers;
+	}
+	
+}

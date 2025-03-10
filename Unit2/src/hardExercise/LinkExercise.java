@@ -1,0 +1,100 @@
+package hardExercise;
+
+public class LinkExercise {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Node one = new Node(1, null);
+		one.next = new Node(3, null);
+		one.next.next = new Node(5,null);
+		
+		Node two = new Node(2, null);
+//		two.next = new Node(4, null);
+//		two.next.next = new Node(6,null);
+		Node runner = two;
+		for (int i = 4; i < 10; i += 2) {
+			runner.next = new Node(i, null);
+			runner = runner.next;
+		}
+//		System.out.println(printChain(one));
+//		System.out.println(printChain(two));
+		for(Object n: one) {
+			System.out.println(((Node)n).data+", ");
+		}
+	}
+	
+	public static boolean hasLoop(Node head) {
+		boolean loop = false;
+		Node r1 = head, r2 = head;
+		int itnum = 0;
+		while (r2 != null && r2.next != null && !loop) {
+			if(r1 == r2 && itnum != 0) {
+				loop = true;
+				continue;
+			}
+			
+			if(r1 != null && r1.next!=null) {
+				r1 = r1.next;
+			} else {
+				return false;
+			}
+		}
+		return false;
+	}
+	
+	public static String printChain(Node n) {
+		String out = "";
+		
+		while(n != null) {
+			out += n.data + ", ";
+			n = n.next; 
+		}
+		return out;
+	}
+	
+	public static Node combineLists(Node n1, Node n2) {
+		if (n1 == null || n2 == null)
+			return n1 == null ? n2:n1;
+		Node head = new Node(n1.data, null);
+		boolean n1done = false, n2done = false;
+		boolean nodeNum = false;
+		Node r1 = new Node(0, null), r2 = new Node(0, null);
+		if (n1.next != null) {
+			r1 = n1.next;
+		} else
+			n1done = true;
+		if (n2 != null) {
+			r2 = n2;
+		} else 
+			n2done = true;
+		
+//		r1.next!= null && r2.next != null && 
+		Node current = head;
+		while (!n1done && !n2done) {
+			if (nodeNum == true) {
+				current.next = new Node(r1.data, r1.next);
+				r1 = r1.next;
+			} else {
+				head.next = new Node(r2.data, r2.next);
+				r2 = r2.next;
+			}
+			if (r1.next == null) {
+				n1done = true;
+			}
+			if (r2.next == null) {
+				n2done = true;
+			}
+			nodeNum = !nodeNum;
+			current = current.next;
+		}
+		
+		if (n1done) {
+			while (r2 != null) {
+				current.next = r2;
+				r2 = r2.next;
+			}
+		}
+		return head;
+		
+	}
+}

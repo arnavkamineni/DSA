@@ -1,0 +1,260 @@
+package snakeLab;
+
+import java.util.Arrays;
+
+public class Snake {
+    Body head; // represents the head of the snake
+    char dir; // current direction of the snake (U, D, L, R)
+    int ateFruit; // tracks how many fruits the snake has eaten
+    boolean alive = true;
+    // constructor to initialize the snake with a specific direction and starting position
+    public Snake(int dir, int row, int col, Body head) {
+        super(); 
+        this.head = new Body(row, col, head); // assigns the head of the snake
+        this.dir = findDir(dir); // sets the direction based on an integer input
+    }
+
+    // converts the integer direction input into a character (R, N, W, S)
+    private char findDir(int dir) {
+        switch(dir) {
+            case 0:
+                return 'R'; // right
+            case 1:
+                return 'N'; // up
+            case 2:
+                return 'W'; // left
+            case 3:
+                return 'S'; // down
+        }
+        return ' '; // default if no valid direction is given
+    }
+
+    // default constructor initializing the snake at specific coordinates
+    public Snake() {
+        head = new Body(4, 4, null); // snake head at (4,4)
+        head.next = new Body(4, 3, null); // second body part
+        head.next.next = new Body(4, 2, null); // third body part
+        dir = 'D'; // default direction is down
+    }
+
+    // returns the second last body part in the snake
+    private Body pointToLastNode() {
+        if (head == null)
+            return null;
+        if (head.next == null)
+            return head;
+        Body runner = head; // starts at the head
+        while(runner.next.next != null) {
+            runner = runner.next; // moves to the next body part
+        }
+        return runner; // returns the second last body part
+    }
+
+    // updates the snake's position based on a series of moves
+    public boolean update(String moves) {
+        char[] moves_arr = moves.toCharArray(); // converts the string of moves to a character array
+        int i = 0;
+        alive = isAlive();
+        for (char c : moves_arr) {
+            if (alive) {
+	        	identifyMove(c); // processes each move
+	            if (c == 'M') 
+	                System.out.println("Moving, Dir = " + dir);
+	            System.out.println("Alive: " + alive);
+	            System.out.println(this); // prints the current state of the snake
+//	            try {
+//	                Thread.sleep(1000); // pauses for 1 second 
+//	            } catch (InterruptedException e) {
+//	                e.printStackTrace(); // 
+//	            }
+	            alive = isAlive();
+            } else {
+            	System.out.println("Alive: " + alive);
+            	System.out.println(this); // prints the current dead state of the snake
+//	            try {
+//	                Thread.sleep(1000); // pauses for 1 second 
+//	            } catch (InterruptedException e) {
+//	                e.printStackTrace(); // 
+//	            }
+            }
+        }
+        return alive; // checks if the snake is still alive
+    }
+
+    // reverses the direction of the snake and its body parts
+    public void reverse() {
+        Body cur = head, prev = null, next;
+        while (cur != null) {
+            next = cur.next; // saves the next body part
+            cur.next = prev; // reverses the link
+            prev = cur; // moves the previous pointer forward
+            cur = next; // moves the current pointer forward
+        }
+        head = prev; // sets the head to the new front
+        // adjust the direction based on the current direction
+        if (dir == 'U' || dir == 'D')
+            dir = dir == 'U' ? 'D' : 'U'; // reverses up/down
+        else
+            dir = dir == 'L' ? 'R' : 'L'; // reverses left/right
+    }
+
+    // checks if the snake is still alive (inside boundaries and no collision)
+    public boolean isAlive() {
+        
+    	if (head.next == null)
+            return (head.x >= 0 && head.x < 10) && (head.y >= 0 && head.y < 10); // checks if head is within the board boundaries
+        Body runner = head.next;
+        while (runner != null) {
+            if (runner.x == head.x && runner.y == head.y)
+                return false; // snake collides with itself
+            runner = runner.next;
+        }
+        return (head.x >= 0 && head.x < 10) && (head.y >= 0 && head.y < 10); // snake is alive if it's inside the boundaries
+    }
+
+    // identifies what action the snake should take based on the given move character
+    private void identifyMove(char c) {
+        if (head == null) {
+            return; // if the snake doesn't exist, no moves can be made
+        }
+        switch (c) {
+            case 'M': // move forward
+                moveCase();
+                break;
+            case 'U': 
+            case 'D': 
+            case 'L': 
+            case 'R': // change direction if not the opposite direction
+                if (!isOpp(c))
+                    dir = c;
+                break;
+            case 'F': // snake eats a fruit
+                ateFruit++;
+                break;
+            case 'E': // snake loses half of its length
+                int len = getSize();
+                int stop_idx = len / 2;
+                Body runner = head;
+                for (int i = 1; i < stop_idx; i++) {
+                    runner = runner.next;
+                }
+                runner.next = null; // cuts the snake at half its length
+                break;
+        }
+    }
+
+    // checks if the given direction is the opposite of the current direction
+    private boolean isOpp(char c) {
+        // check if the current direction is the opposite of the move direction
+        if ((dir == 'U' && c == 'D') || (dir == 'D' && c == 'U') ||
+            (dir == 'L' && c == 'R') || (dir == 'R' && c == 'L')) {
+            return true; // the move is in the opposite direction
+        }
+        return false; // the move is not opposite, so it's allowed
+    }
+
+
+    // returns the size (length) of the snake
+    public int getSize() {
+        int len = 0;
+        Body runner = head;
+        while (runner != null) {
+            len++;
+            runner = runner.next;
+        }
+        return len;
+    }
+
+    // handles the movement of the snake based on the current direction
+    private void moveCase() {
+        int x = 0, y = 0;
+        if (dir == 'U') {
+            y--;
+        } else if (dir == 'D') {
+            y++;
+        } else if (dir == 'L') {
+            x--;
+        } else if (dir == 'R') {
+            x++;
+        }
+        Body last_ptr = pointToLastNode(); // finds the second last body part
+
+        if (last_ptr == null) {
+            return;
+        }
+
+        if (ateFruit > 0) { // if the snake has eaten a fruit
+            ateFruit--;
+            Body temp = new Body(head.x + x, head.y + y, head); // grows the snake
+            head = temp;
+            return;
+        }
+
+        if (getSize() == 1) { // if the snake is only 1 part long
+            head.x += x;
+            head.y += y;
+            return;
+        }
+
+        Body last = last_ptr.getNext(); // gets the last body part
+        last_ptr.setNext(null); // removes the last body part
+        last.setNext(head); // moves the last part to the front
+        head = last;
+        head.x = head.next.x + x; // updates the head position
+        head.y = head.next.y + y;
+    }
+
+    // prints the snake on a 10x10 grid
+    public String toString() {
+        char[][] board = new char[10][10];
+        init(board); // initializes the board
+        Body runner = head;
+        char c = alive ? 'O' : 'X'; // displays 'O' if alive, 'X' if dead
+        System.out.println(alive);
+        while (runner != null) {
+            if (runner.x >= 0 && runner.x < 10 && runner.y >= 0 && runner.y < 10) {
+                board[runner.y][runner.x] = c; // places the snake on the board
+                if (runner == head)
+                    board[runner.y][runner.x] = returnChar(); // shows the head direction
+            }
+            runner = runner.next;
+        }
+        return format(board); // returns the formatted board as a string
+    }
+
+    // returns a character that represents the direction of the snake's head
+    public char returnChar() {
+        switch (dir) {
+            case 'U':
+                return '^'; // up
+            case 'D':
+                return 'v'; // down
+            case 'L':
+                return '<'; // left
+            case 'R':
+                return '>'; // right
+        }
+        return dir;
+    }
+
+    // initializes the board with empty cells
+    private void init(char[][] arr) {
+        for (int row = 0; row < arr.length; row++) {
+            for (int col = 0; col < arr[0].length; col++) {
+                arr[row][col] = '.'; // sets all cells to '.'
+            }
+        }
+    }
+
+    // formats the board into a string for printing
+    private String format(char[][] arr) {
+        String out = "";
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                out += arr[i][j] + " ";
+            }
+            out += "\n";
+        }
+        return out;
+    }
+}

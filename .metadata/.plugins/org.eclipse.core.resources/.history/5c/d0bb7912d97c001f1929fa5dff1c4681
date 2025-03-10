@@ -1,0 +1,57 @@
+package hardExercise;
+
+public class LinkExercise {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Node one = new Node(1, null);
+		one.next = new Node(3, null);
+		one.next.next = new Node(5,null);
+		
+		Node two = new Node(2, null);
+//		two.next = new Node(4, null);
+//		two.next.next = new Node(6,null);
+		Node runner = two;
+		for (int i = 4; i < 10; i += 2) {
+			runner.next = new Node(i, null);
+			runner = runner.next;
+		}
+		System.out.println(printChain(one));
+		System.out.println(printChain(two));
+	}
+	
+	public static String printChain(Node n) {
+		String out = "";
+		
+		while(n != null) {
+			out += n.data + ", ";
+			n = n.next; 
+		}
+		return out;
+	}
+	
+	public static Node combineLists(Node n1, Node n2) {
+		if (n1 == null || n2 == null)
+			return n1 == null ? n2:n1;
+		Node head = new Node(n1.data, null);
+		boolean n1done, n2done;
+		int nodeNum = 1;
+		Node r1 = new Node(0, null), r2 = new Node(0, null);
+		if (n1.next != null) {
+			r1 = n1.next;
+		} else
+			n1done = true;
+		if (n2.next != null) {
+			r2 = n2.next;
+		} else 
+			n2done = true;
+		
+		while (r1.next!= null && r2.next != null) {
+			if (nodeNum == 1) {
+				
+			}
+		}
+		
+		
+	}
+}

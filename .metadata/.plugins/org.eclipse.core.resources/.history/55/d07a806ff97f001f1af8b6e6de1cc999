@@ -1,0 +1,72 @@
+package hardExercise;
+
+import java.util.Iterator;
+
+
+
+@SuppressWarnings("hiding")
+public class Node<Integer> implements Iterable{
+
+	Integer data;
+
+	Node next;
+
+	
+
+	public Node(Integer data, Node next) {
+
+		this.data = data;
+
+		this.next = next;
+
+	}
+
+
+
+	@Override
+
+	public Iterator<Node> iterator() {
+
+		// TODO Auto-generated method stub
+
+		return new LinkIt();
+
+	}
+
+	private class LinkIt<Integer> implements Iterator {
+
+		Node<Integer> runner = new Node<Integer>(data, next);
+
+
+
+		@Override
+
+		public boolean hasNext() {
+
+			// TODO Auto-generated method stub
+
+			return runner != null;
+
+		}
+
+
+
+		@Override
+
+		public Node next() {
+
+			// TODO Auto-generated method stub
+
+			if (!hasNext()) return null;
+
+			Node output = runner; runner = runner.next;
+
+			return output;
+
+		}
+
+		
+
+	}
+
+}

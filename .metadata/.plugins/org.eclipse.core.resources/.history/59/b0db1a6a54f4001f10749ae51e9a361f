@@ -1,0 +1,7 @@
+package hape;
+
+import java.util.ArrayList;
+
+public class Triage {
+	ArrayList<Injury> injuries;
+}

@@ -1,0 +1,23 @@
+package linkyListy;
+
+public class Playlist {
+	Track intro;
+	Track current;
+	
+	public Playlist() {
+		intro = new Track("Intro", "Link", 60, null);
+	}
+	
+	public Playlist(Track i) {
+		intro = i; current = i;
+	}
+	
+	public void addTrack(Track t) {
+		Track runner = current;
+		if (current )
+		while (runner.next != null) {
+			runner = runner.next;
+		}
+		runner.next = t;
+	}
+}

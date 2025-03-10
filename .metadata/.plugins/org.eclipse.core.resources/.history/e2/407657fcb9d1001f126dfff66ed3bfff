@@ -1,0 +1,26 @@
+package dp;
+
+import java.util.ArrayList;
+
+public class DP {
+	
+	public static void main(String[] args) {
+		
+	}
+	
+	public static long prime(int n) {
+		ArrayList<Integer> memo = new ArrayList<Integer>();
+		
+		return primeH(n, memo);
+	}
+	
+	private static long primeH(int n, ArrayList<Integer> memo) {
+		if (n < memo.size() ) {
+			return memo.get(n);
+		}
+		
+		for (Integer prime: memo) {
+			
+		}
+	}
+}

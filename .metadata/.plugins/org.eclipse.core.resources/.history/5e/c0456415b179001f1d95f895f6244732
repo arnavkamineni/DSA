@@ -1,0 +1,6 @@
+package linkyListy;
+
+public class Track { //Node a track in the playlist
+	String title;
+	String Artist;
+}

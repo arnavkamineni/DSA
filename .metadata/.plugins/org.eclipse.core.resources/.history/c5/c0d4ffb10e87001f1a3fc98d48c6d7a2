@@ -1,0 +1,20 @@
+package hardExercise;
+
+public class LinkStack<T> {
+	Node<T> top;
+	
+	public LinkStack(Node <T> n) {
+		top = n;
+	}
+	
+	public boolean isEmpty() {
+		return top == null;
+	}
+	
+	public int size() {
+		if (isEmpty())
+			return 0;
+		runner r1 = 
+	}
+	
+}

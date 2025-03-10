@@ -1,0 +1,10 @@
+package linkyListy;
+
+public class Link {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		LinkedLisrt<String> presidents = new LinkedList();
+	}
+
+}

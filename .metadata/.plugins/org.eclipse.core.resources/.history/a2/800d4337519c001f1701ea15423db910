@@ -1,0 +1,6 @@
+package lab;
+
+public class Entry {
+	String key;
+	String value;
+}

@@ -1,0 +1,45 @@
+package sorts;
+
+import java.util.Arrays;
+
+public class Quicky {
+	int[] nums;
+	
+	public Quicky(int size) {
+		nums = new int[size];
+		for (int i = 0; i < size; i++) {
+			nums[i] = (int)(Math.random()*size);
+		}
+		
+	}
+	
+	public String toString() {
+		return Arrays.toString(nums);
+	}
+	
+	public void qs1() {
+		qsRecur1(0, nums.length-1);
+	}
+	
+	private void qsRecur1(int start, int end) {
+		if (start >= end) {
+			return;
+		}
+		int pivot = nums[end];
+		
+		int marlin = end;
+		for (int dory = start; dory <= end; dory ++) {
+			if(nums[dory] < pivot) {
+				int temp = nums[dory];
+				swap(dory, marlin);
+				marlin++;
+			}
+		}
+	}
+	
+	private void swap(int i1, int i2) {
+		int temp = nums[i1];
+		nums[i1] = nums[i2];
+		nums[i2] = temp;
+	}
+}

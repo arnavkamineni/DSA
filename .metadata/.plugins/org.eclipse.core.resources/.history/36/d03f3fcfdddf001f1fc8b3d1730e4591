@@ -1,0 +1,127 @@
+package tree;
+
+public class TNode {
+	Integer value;
+	TNode left, right;
+	public TNode(Integer val) {
+		value = val;
+	}
+	
+	public TNode(Integer value, TNode left, TNode right) {
+		super();
+		this.value = value;
+		this.left = left;
+		this.right = right;
+	}
+	
+	public void addNode(TNode tn) {
+		if(tn.value < this.value) {
+			if (this.left == null) {
+				this.left = tn;
+			} else {
+				this.left.addNode(tn);
+			}
+		} else if(tn.value > this.value) {
+			if (tn.value > this.value) {
+				if (this.right == null) {
+					this.right = tn;
+				} else {
+					this.right.addNode(tn);
+				}
+			}
+		}
+	}
+	
+	public String inOrder() {
+		String out = "";
+		if (left == null) {
+			out = "" + this.value;
+		} else {
+			left.inOrder();
+		}
+		if (right == null) {
+			return out;
+		} else {
+			return right.inOrder();
+		}
+	}
+	
+	public String preOrder() {
+		String out = this.value + "";
+		if (left != null) {
+			left.preOrder();
+		} 
+		if (right == null) {
+			return out;
+		} else {
+			return right.preOrder();
+		}
+	}
+	
+	public String postOrder() {
+		String out = "";
+		if (left != null) {
+			left.postOrder();
+		} 
+		if (right != null) {
+			return right.postOrder();
+		} else {
+			return out + this.value + "";
+		}
+	}
+	
+	public TNode get(int v) {
+		if (v == value) 
+			return this;
+		if (v > value) 
+			return right != null ? right.get(v) : null;
+		return left != null ? left.get(v) : null;
+	}
+
+	public TNode getParent(int v) {
+		if (left != null && left.value == v) 
+			return this;
+		
+		if (right != null && right.value == v) 
+			return this;
+		
+		if (v > value) 
+			return right != null ? right.getParent(v) : null;
+		return left != null ? left.getParent(v) : null;
+	}
+	
+	public int getHeight() {
+		if (left == null && right == null) {
+			return 0;
+		}
+
+		return 1 + Math.max(left == null ? 0 : left.getHeight(), right == null ? 0 : right.getHeight());
+	}
+	
+	public String toString() {
+		return this.value+"";
+	}
+	
+	public int size() {
+		if (left == right)
+			return 1;
+
+		return 1 + Math.max(left == null ? 1 : left.getHeight(), right == null ? 1 : right.getHeight());
+		
+	}
+	
+	public TNode delete (int v) {
+		TNode parent = this.getParent(v);
+		if(parent == null) {
+			return null;
+		}
+		TNode orphan = parent.get(v); 
+		
+		//case 1: disowned has no kids
+		if (orphan.left == null && orphan.right == null) {
+			if(parent.left == orphan) {
+				
+			}
+		}
+	}
+}

@@ -1,0 +1,20 @@
+package linkyListy;
+
+import java.util.LinkedList;
+
+public class Link {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		LinkedList<String> presidents = new LinkedList<String>();
+		presidents.add("George Washington");
+		presidents.add("John Adams");
+		presidents.add("Thomas Jefferson");
+		presidents.add("James Madison");
+		for(String s: presidents) {
+			System.out.println(s);
+		}
+		presidents.add(4, "James Monroe");
+	}
+
+}

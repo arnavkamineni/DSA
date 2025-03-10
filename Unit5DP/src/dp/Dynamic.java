@@ -1,0 +1,52 @@
+package dp;
+
+import java.util.HashMap;
+
+public class Dynamic {
+	
+	public static HashMap<Integer, Long> memo = new HashMap<Integer, Long>();
+	public static HashMap<Integer, Integer> totals = new HashMap<Integer, Integer>();
+	public static void main(String[] args) {
+		memo.put(1, (long) 0);
+		memo.put(2, (long) 1);
+		System.out.println(fibGood(10));
+		int[] denoms = {1, 5, 10, 25};
+		System.out.println(coinCount(denoms, 34));
+	};
+	
+	public static int diceCountD(int dice, int target) {
+		if (target == 0 && dice == 0) {
+			return 1;
+		}
+	}
+
+	
+	public static long fibGood(int n) {
+		for (int i = 1; i <= n; i++) {
+
+			if (memo.get(i) == null) {
+				memo.put(i, memo.get(i-1) + memo.get(i-2));
+			}
+		}
+		return memo.get(n);
+	}
+	
+	public static int coinCount(int[] denom, int total) {
+		if (total < 0) {
+			return Integer.MAX_VALUE;
+		}
+		if (total == 0) {
+			return 0;
+		}
+		if (totals.containsKey(total)) {
+			return totals.get(total);
+		}
+		
+		int count = Integer.MAX_VALUE;
+		for(int coin : denom) {
+			count = Math.min(count, coinCount(denom, total - count));
+		}
+		totals.put(total, count+1);
+		return count;
+	}
+}

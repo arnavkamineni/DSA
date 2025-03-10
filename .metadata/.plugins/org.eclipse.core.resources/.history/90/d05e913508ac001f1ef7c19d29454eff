@@ -1,0 +1,125 @@
+package sorts;
+
+import java.util.Arrays;
+
+public class Quicky {
+    int[] nums;
+    
+    public Quicky(int size) {
+        nums = new int[size];
+        for (int i = 0; i < size; i++) {
+            nums[i] = (int)(Math.random() * size);
+        }
+    }
+    
+    public String toString() {
+        return Arrays.toString(nums);
+    }
+    
+    public void qs1() {
+        qsRecur1(0, nums.length - 1);
+    }
+    
+    private void qsRecur1(int start, int end) {
+        if (start >= end) {
+            return;
+        }
+        
+        int pivot = nums[end];
+        int marlin = start;  // marlin starts at the beginning
+        
+        // Partition step
+        for (int dory = start; dory < end; dory++) {
+            if (nums[dory] < pivot) {
+                swap(dory, marlin);
+                marlin++;  // increment marlin after a valid swap
+            }
+        }
+        
+        // Place the pivot in the correct position
+        swap(marlin, end);
+        
+        // Recursively sort the two halves
+        qsRecur1(start, marlin - 1);  // Sort the left side
+        qsRecur1(marlin + 1, end);    // Sort the right side
+    }
+    
+    private void swap(int i1, int i2) {
+        int temp = nums[i1];
+        nums[i1] = nums[i2];
+        nums[i2] = temp;
+    }
+    
+    public void hoare() {
+
+		hoare(0,nums.length-1);
+
+	}
+
+	public void hoare(int start, int end) {
+
+		if(start>=end)
+
+			return;
+
+		int pivot = nums[(int)(Math.random()*(end-start+1))+start];
+
+		int crush = start; int squirt = end;
+
+		while(crush<squirt) {
+
+			while(nums[crush]<pivot)crush++;
+
+			while(nums[squirt]>pivot)squirt--;
+
+			if(crush<=squirt) {
+
+				int temp = nums[crush];
+
+				nums[crush]= nums[squirt];
+
+				nums[squirt] = temp;
+
+			}
+
+		}
+
+		hoare(start,squirt);
+
+		hoare(crush,end);
+
+	}
+	
+	
+	private int quickSelect(int start, int end, int i) { 
+		if (start > end) {
+            return -1;
+        }
+		
+        
+        int pivot = nums[end];
+        int marlin = start;  // marlin starts at the beginning
+        
+        // Partition step
+        for (int dory = start; dory < end; dory++) {
+            if (nums[dory] < pivot) {
+                swap(dory, marlin);
+                marlin++;  // increment marlin after a valid swap
+            }
+        }
+        
+        // Place the pivot in the correct position
+        swap(marlin, end);
+        
+        // Recursively sort the two halves
+        if (i < pivot)
+        	qsRecur1(start, marlin - 1);  // Sort the left side
+        else if (i > pivot)
+        	qsRecur1(marlin + 1, end);    // Sort the right side
+        else if (pivot == i) {
+        	
+        }
+	}
+
+
+}

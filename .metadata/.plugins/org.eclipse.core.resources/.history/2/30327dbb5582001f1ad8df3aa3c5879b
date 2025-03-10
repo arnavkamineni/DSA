@@ -1,0 +1,208 @@
+package snakeLab;
+
+import java.util.Arrays;
+
+public class Snake {
+	Body head;
+	char dir;
+	int ateFruit;
+	
+	public Snake(int dir, int row, int col, Body head) {
+		super();
+		this.head = head;
+		this.dir = dir;
+	}
+	
+	public Snake() {
+		
+		head = new Body(3, 3, null);
+		dir = 'U';
+	}
+	
+	private Body pointToLastNode() {
+		if (head == null)
+			return null;
+		if (head.next == null)
+			return head;
+		Body runner = head;
+		while(runner.next.next != null) {
+			runner=runner.next;
+		}
+		return runner;
+	}
+	
+	public boolean update(String moves) {
+		char moves_arr[] = moves.toCharArray();
+		int i = 0;
+		for (char c: moves_arr) {
+			identifyMove(c);
+			if (c == 'M')
+				System.out.println("Moving");
+			System.out.println(this);
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return isAlive();
+	}
+	
+	public void reverse() {
+		Body cur = head, prev = null, next;
+		while (cur != null) {
+			next = cur.next;
+			cur.next = prev;
+			prev = cur;
+			cur = next;
+		}
+		head = prev;
+		if (dir == 'U' || dir == 'D')
+			dir = dir == 'U' ? 'D':'U';
+		else
+			dir = dir == 'L' ? 'R':'L';
+	}
+	
+	public boolean isAlive() {
+		return (head.x >= 0 && head.x < 10) && (head.y >= 0 && head.y < 10);
+	}
+	
+	private void identifyMove(char c) {
+	    if (head == null) {
+	        
+	    	return;
+	    }
+	    switch (c) {
+	        case 'M':
+	        	moveCase();
+	            break;
+	        case 'U': 
+	        case 'D': 
+	        case 'L': 
+	        case 'R':
+	            if (!isOpp(c))
+	                dir = c;
+	            break;
+	        case 'F':
+	            ateFruit++;
+	            break;
+	        case 'E':
+	            int len = getSize();
+	            int stop_idx = len / 2;
+	            Body runner = head;
+	            for (int i = 1; i < stop_idx; i++) {
+	                runner = runner.next;
+	            }
+	            runner.next = null;
+	            break;
+	    }
+	}
+
+	
+	private boolean isOpp(char c) {
+		if ()
+	}
+	
+	public int getSize() {
+		int len = 0;
+		Body runner = head;
+		while(runner!=null) {
+			len++;
+			runner = runner.next;
+		}
+		return len;
+			
+	}
+	
+	private void moveCase() {
+		int x = 0, y = 0;
+		if (dir == 'U') {
+			y--;
+		} else if (dir == 'D') {
+			y++;
+		} else if (dir == 'L') {
+			x--;
+		} else if (dir == 'R') {
+			x++;
+		}
+		Body last_ptr = pointToLastNode();
+		
+		if (last_ptr == null) {
+			return;
+		}
+		
+		if (ateFruit > 0) {
+			ateFruit--;
+			Body temp = new Body(head.x + x, head.y + y, head);
+			head = temp;
+			return;
+		}
+		
+		if (getSize() == 1) {
+			head.x += x;
+			head.y += y;
+			return;
+		}
+		
+		
+			
+		Body last = last_ptr.getNext();
+		last_ptr.setNext(null);
+		last.setNext(head);
+		head = last;
+		head.x = head.next.x + x;
+		head.y = head.next.y + y;
+	}
+	
+	
+	public String toString() {
+		char[][] board = new char[10][10];
+		init(board);
+		Body runner = head;
+		char c = isAlive() ? 'O' : 'X';  
+		while(runner!=null) {
+			if (runner.x >= 0 && runner.x < 10 && runner.y >= 0 && runner.y < 10) {
+				board[runner.y][runner.x] = c;
+				if (runner == head)
+					board[runner.y][runner.x] = returnChar();
+			}
+			runner = runner.next;
+		}
+		
+		return format(board);
+	}
+	
+	public char returnChar() {
+		switch(dir) {
+		case('U'):
+			return '^';
+		case('D'):
+			return 'v';
+		case('L'):
+			return '<';
+		case('R'):
+			return '>';
+		}
+		return dir;
+	}
+	
+	private void init(char[][] arr) { 
+		for (int row = 0; row < arr.length; row++) {
+			for (int col = 0; col < arr[0].length; col++) {
+				arr[row][col] = '.';
+			}
+		}
+	}
+	
+	private String format(char[][] arr) {
+		String out = "";
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 10; j++) {
+				out += arr[i][j] + " ";
+			}
+			out += "\n";
+		}
+		return out;
+	}
+}

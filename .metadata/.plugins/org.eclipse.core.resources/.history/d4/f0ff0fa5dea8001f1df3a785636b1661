@@ -1,0 +1,58 @@
+package sorts;
+
+public class Driver {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Node h = new Node(Integer.MIN_VALUE);
+		for(int i = 0; i < 9; i ++) {
+			h.add((int)(Math.random()*10));
+		}
+		h.add(0);
+		System.out.println(h);
+		System.out.println(mergeLinkSort(h));
+		h.remove(0);
+	}	
+	
+	public static Node mergeLinkSort(Node head) {
+//		return head;
+		if (head == null || head.next == null)
+			return head;
+		Node middle = findMiddle(head, head);
+		Node secondHalf = middle.next;
+		middle.next = null;
+		Node left = mergeLinkSort(head);
+		Node right = mergeLinkSort(secondHalf);
+		head = merge(left, right);
+		return head;
+	}
+
+	public static Node merge(Node left, Node right) {
+		Node dummy = new Node(Integer.MIN_VALUE);
+		Node runner = dummy;
+		while ( left != null && right != null) {
+			if ((Integer)left.data < (Integer)right.data) {
+				runner.next = left;
+				left = left.next;
+			} else {
+				runner.next = right;
+				right = right.next;
+			}
+			runner = runner.next;
+		}
+		if (left == null)
+			runner.next = right;
+		else
+			runner.next = left;
+		return dummy.next;
+	}
+
+	public static Node findMiddle(Node slow, Node fast) {
+		// TODO Auto-generated method stub
+		if (fast.next == null || fast.next.next == null) {
+			return slow;
+		}
+		return findMiddle(slow.next, fast.next.next);
+	}
+
+}

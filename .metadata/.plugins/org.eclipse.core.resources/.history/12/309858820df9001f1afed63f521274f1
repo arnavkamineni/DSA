@@ -1,0 +1,94 @@
+package hape;
+
+import java.util.ArrayList;
+
+public class Triage {
+	ArrayList<Injury> injuries;
+	
+	public Triage(ArrayList<Injury> inj) {
+		injuries = inj;
+	}
+	
+	public Injury findMin() {
+		return injuries.isEmpty()?null:injuries.get(0);
+	}
+	public Injury getLeft(int i) {
+		return (2*i+1)<injuries.size()?injuries.get(2*i+1):null;
+	}
+	public Injury getLeft(Injury inj) {
+		int spot = injuries.indexOf(inj);
+		return spot>-1?this.getLeft(spot):null;
+	}
+	public Injury getRight(int i) {
+		return (2*i+2)<injuries.size()?injuries.get(2*i+2):null;
+	}
+	public Injury getRight(Injury inj) {
+		int spot = injuries.indexOf(inj);
+		return spot>-1?this.getRight(spot):null;
+	}
+	public Injury getParent(int i) {
+		return i>0?injuries.get((i-1)/2):null;
+	}
+	public Injury getParent(Injury inj) {
+		return this.getParent(injuries.indexOf(inj));
+	}
+	public void swap(int i, int j) {
+		if(i<0||j<0||i>=injuries.size()||j>=injuries.size())
+			return;
+		Injury temp = injuries.get(i);
+		injuries.set(i, injuries.get(j));
+		injuries.set(j, temp);
+	}
+	
+	public void upHeap(int i) {
+		while (i>0 && injuries.get(i).compareTo(this.getParent(i)) < 0) {
+			swap(i, (i-1)/2);
+			i = (i-1)/2;
+		}
+	}
+	
+	public Injury treat() { 
+		swap(0, injuries.size() - 1);
+		Injury treated = injuries.remove(injuries.size()-1);
+		downHeap(0);
+		return treated;
+	}
+	
+	
+	public void downHeap(int i) {
+		if(this.getLeft(i) == null && this.getRight(i) == null) return;
+		if(this.getRight(i) == null) {
+			if (this.getLeft(i).compareTo(injuries.get(i)) < 0) {
+				swap(i, 2*i+1);
+				downHeap(2*i+1);
+			}
+			return;
+		}
+		Injury left = this.getLeft(i);
+		Injury right = this.getRight(i);
+		int smaller = left.compareTo(right)<0?2*i+1:2*1+2;
+		if(injuries.get(i).compareTo(injuries.get(smaller)) > 0) {
+			swap(i, smaller);
+			downHeap(smaller);
+		}
+	}
+	
+	public void add(Injury inj) {
+		injuries.add(inj);
+		this.upHeap(injuries.size()-1);
+	}
+	
+	public String toString() {
+		String out = "";
+		int levels = (int)(Math.log(injuries.size())/Math.log(2));
+		for(int i = 0; i <= levels; i++) {
+			int start = (int)(Math.pow(2, i) - 1);
+			int end = Math.min(injuries.size()-1, (int)(Math.pow(2, i + 1) - 2));
+			for (int j = start; j <= end; j++) {
+				out += injuries.get(j);
+			}
+			out += "\n";
+		}
+		return out;
+	}
+}

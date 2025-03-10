@@ -1,0 +1,21 @@
+package tree;
+
+public class Forest {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		TNode oak = new TNode(20);
+		int arr[] = new int[] {15, 17, 14, 30, 21, 1};
+		for (int a : arr) {
+			oak.addNode(new TNode(a));
+		}
+		System.out.println(oak.postOrder());
+		System.out.println(oak.getHeight());
+		System.out.println(oak.size());
+		System.out.println(oak.get(21));
+		TNode ancestor = new TNode(Integer.MIN_VALUE);
+		ancestor.left = oak;
+		System.out.println(ancestor.getParent(21));
+	}
+
+}

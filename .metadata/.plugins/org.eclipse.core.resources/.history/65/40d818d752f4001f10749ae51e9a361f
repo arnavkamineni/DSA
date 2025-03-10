@@ -1,0 +1,9 @@
+package hape;
+
+public class Injury {
+	String ailment;
+	int priority;
+	public (String ailment, int priority) {
+		
+	}
+}

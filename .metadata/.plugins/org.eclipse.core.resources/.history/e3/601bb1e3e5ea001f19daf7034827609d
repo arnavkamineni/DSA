@@ -1,0 +1,30 @@
+package tree;
+
+public class Forest {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		TNode oak = new TNode(20);
+		int arr[] = new int[] {15, 17, 14, 30, 21, 1};
+		for (int a : arr) {
+			oak.addNode(new TNode(a));
+		}
+//		System.out.println(oak.postOrder());
+//		System.out.println(oak.getHeight());
+//		System.out.println(oak.size());
+//		System.out.println(oak.get(21));
+//		TNode ancestor = new TNode(-9999);
+//		ancestor.right = oak;
+//		System.out.println(ancestor.getParent(21));
+//		System.out.println(ancestor.delete(17));
+//		System.out.println(ancestor.delete(15));
+//		System.out.println(ancestor.postOrder());
+		TNode AVL = new TNode(10);
+		int[] arr2 = {10 ,8, 12, 6, 4};
+		for (int a: arr2) {
+			AVL = AVL.addNode(new TNode(a));
+		}
+		System.out.println(AVL.preOrder());
+	}
+
+}

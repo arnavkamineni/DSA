@@ -1,0 +1,12 @@
+package lab;
+
+public class Entry {
+	String key;
+	String value;
+	
+	public SweetEntry(String key, String value) {
+		super();
+		this.key = key;
+		this.value = value;
+	}
+}

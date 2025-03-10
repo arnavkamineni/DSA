@@ -1,0 +1,14 @@
+package snakeLab;
+
+public class Driver {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Snake s = new Snake();
+		System.out.println(s);
+//		s.update("MFMMFMRMFDMLM");
+		System.out.println(s);
+		System.out.println(s.ateFruit);
+	}
+
+}

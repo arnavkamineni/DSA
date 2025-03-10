@@ -1,0 +1,14 @@
+package lab;
+
+public class Entry {
+	Key key;
+	Value value;
+	
+	public Entry(Key key, Value value) {
+		super();
+		this.key = key;
+		this.value = value;
+	}
+	
+	
+}

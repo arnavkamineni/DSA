@@ -1,0 +1,13 @@
+package hape;
+
+import java.util.ArrayList;
+
+public class Hospital {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		ArrayList<Injury> injuries = new ArrayList<>();
+		Triage heap = new Triage();
+	}
+
+}
