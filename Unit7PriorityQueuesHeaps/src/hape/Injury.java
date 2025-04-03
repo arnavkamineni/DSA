@@ -19,6 +19,15 @@ public class Injury implements Comparable<Injury>{
 		priority = 0;
 	}
 	
+	public int compareToMax(Injury o) {
+		// TODO Auto-generated method stub
+		return o.priority - this.priority;
+	}
+	
+	public int compareTo(Injury o, boolean isMin) {
+		// TODO Auto-generated method stub
+		return isMin ? this.compareTo(o) : this.compareToMax(o);
+	}
 
 	@Override
 	public int compareTo(Injury o) {

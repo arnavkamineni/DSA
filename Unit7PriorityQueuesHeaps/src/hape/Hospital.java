@@ -14,7 +14,8 @@ public class Hospital {
 		heap.add(new Injury("Shot Kidney", 2));
 		heap.add(new Injury("In Labor", 2));
 		heap.add(new Injury("Paper Cut", 6));
-		System.out.println("mustaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaard");
+		Injury[] unordered = new Injury[] { new Injury("A", 10), new Injury("B", 2), new Injury("C", 1), new Injury("D", 1), new Injury("E", 2), new Injury("F", 8)};
+		
 		System.out.println(heap);
 	}
 

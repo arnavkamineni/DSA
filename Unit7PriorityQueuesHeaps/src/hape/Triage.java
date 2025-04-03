@@ -10,11 +10,14 @@ public class Triage {
 		injuries = inj;
 	}
 	
-	public Triage(Injury[] unPQ) {
+	public Triage(Injury[] unPQ, boolean isMin) {
 		injuries = new ArrayList<Injury>(Arrays.asList(unPQ));
 //		int start = getParent(injuries.size()-1);
 		for (int i = injuries.size()/2-1; i >-1; i--) {
-			downHeap(i);
+			if (isMin) 
+				downHeap(i);
+			else
+				downHeapMax(i, injuries.size());
 		}
 	}
 	
@@ -88,10 +91,38 @@ public class Triage {
 		}
 		Injury left = this.getLeft(i);
 		Injury right = this.getRight(i);
-		int smaller = left.compareTo(right)<0?2*i+1:2*1+2;
+		int smaller = left.compareTo(right)<0?2*i+1:2*i+2;
 		if(injuries.get(i).compareTo(injuries.get(smaller)) > 0) {
 			swap(i, smaller);
 			downHeap(smaller);
+		}
+	}
+	
+	public void downHeapMax(int i, int size) {
+		if( (2*i+1>= size || this.getLeft(i) == null) && (this.getRight(i) == null)) return;
+		if(this.getRight(i) == null) {
+			if (this.getLeft(i).compareToMax(injuries.get(i)) < 0) {
+				swap(i, 2*i+1);
+				downHeapMax(2*i+1, size);
+			}
+			return;
+		}
+		Injury left = this.getLeft(i);
+		Injury right = this.getRight(i);
+		int smaller = left.compareToMax(right)<0?2*i+1:2*i+2;
+		if(injuries.get(i).compareToMax(injuries.get(smaller)) > 0) {
+			swap(i, smaller);
+			downHeapMax(smaller, size);
+		}
+	}
+	
+	public void heapSort() {
+		ArrayList<Injury> temp = new ArrayList<Injury>();
+		int size = injuries.size();
+		while(injuries.size()>0) {
+			swap(0, size-1);
+			temp.add(0, injuries.remove(injuries.size()-1));
+			downHeapMax(0, size--);
 		}
 	}
 	
