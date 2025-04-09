@@ -9,7 +9,7 @@ public class Island {
     private int id;                   
     private int requiredBridges;     
     private int row, col;             
-    private Map<Island, Integer> connections;
+    private HashMap<Island, Integer> connections;
     public Island(int id, int requiredBridges, int row, int col) {
         this.id = id;
         this.requiredBridges = requiredBridges;
@@ -26,7 +26,7 @@ public class Island {
         return requiredBridges;
     }
 
-    public Map<Island, Integer> getConnections() {
+    public HashMap<Island, Integer> getConnections() {
         return connections;
     }
 
