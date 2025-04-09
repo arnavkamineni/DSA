@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -34,17 +35,23 @@ public class Hashi {
             cols = Math.max(cols, line.length());
         }
         grid = new char[rows][cols];
+        String out = "";
         for (int i = 0; i < rows; i++) {
             String line = lines.get(i);
+            
             for (int j = 0; j < cols; j++) {
                 if (j < line.length()) {
                     grid[i][j] = line.charAt(j);
                 } else {
                     grid[i][j] = ' '; 
                 }
+               
             }
+            out += Arrays.toString(grid[i]) + '\n';
         }
-
+        
+        System.out.println(out);
+        
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 char ch = grid[i][j];
