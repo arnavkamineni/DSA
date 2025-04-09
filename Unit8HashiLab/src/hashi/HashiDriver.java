@@ -4,7 +4,7 @@ public class HashiDriver {
     public static void main(String[] args) {
         Hashi hashi = new Hashi();
 
-        String filename = "puzzle_solution.txt";
+        String filename = "Hashi1.txt";
 
 
         hashi.loadSolution(filename);
