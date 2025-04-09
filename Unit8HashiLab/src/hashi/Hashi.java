@@ -1,10 +1,16 @@
 package hashi;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 public class Hashi {
-    private List<Island> islands;
+    private ArrayList<Island> islands;
     private char[][] grid;
-    private Map<String, Island> islandMap;
+    private HashMap<String, Island> islandMap;
 
     private int islandIdCounter = 1;
 
@@ -14,9 +20,9 @@ public class Hashi {
     }
     
     public void loadSolution(String filename) {
-        List<String> lines;
+        ArrayList<String> lines;
         try {
-            lines = Files.readAllLines(Paths.get(filename));
+            lines = (ArrayList<String>) Files.readAllLines(Paths.get(filename));
         } catch (IOException e) {
             System.err.println("Error reading file " + filename + ": " + e.getMessage());
             return;
@@ -138,7 +144,7 @@ public class Hashi {
         }
         System.out.println("\nEdges (Bridges):");
         for (Island island : islands) {
-            for (Map.Entry<Island, Integer> entry : island.getConnections().entrySet()) {
+            for (HashMap.Entry<Island, Integer> entry : island.getConnections().entrySet()) {
                 Island neighbor = entry.getKey();
                 if (island.getId() < neighbor.getId()) {
                     System.out.println("Edge: " + island + " --(" + entry.getValue() + ")--> " + neighbor);
@@ -163,21 +169,21 @@ public class Hashi {
         System.out.println("\nConnectivity Check:");
         if (islands.isEmpty()) return;
 
-        Set<Island> visited = new HashSet<>();
+        HashSet<Island> visited = new HashSet<>();
         dfs(islands.get(0), visited);
 
         if (visited.size() != islands.size()) {
             System.out.println("The graph is not fully connected. Disjoint clusters found:");
-            List<Set<Island>> clusters = new ArrayList<>();
-            Set<Island> remaining = new HashSet<>(islands);
+            ArrayList<HashSet<Island>> clusters = new ArrayList<>();
+            HashSet<Island> remaining = new HashSet<>(islands);
             while (!remaining.isEmpty()) {
                 Island start = remaining.iterator().next();
-                Set<Island> cluster = new HashSet<>();
+                HashSet<Island> cluster = new HashSet<>();
                 dfs(start, cluster);
                 clusters.add(cluster);
                 remaining.removeAll(cluster);
             }
-            for (Set<Island> cluster : clusters) {
+            for (HashSet<Island> cluster : clusters) {
                 System.out.println("Cluster: " + cluster);
             }
         } else {
@@ -185,7 +191,7 @@ public class Hashi {
         }
     }
 
-    private void dfs(Island current, Set<Island> visited) {
+    private void dfs(Island current, HashSet<Island> visited) {
         if (visited.contains(current)) return;
         visited.add(current);
         for (Island neighbor : current.getConnections().keySet()) {
