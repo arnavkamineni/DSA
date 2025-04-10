@@ -1,21 +1,18 @@
 package hashi;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.*;
-
 public class Island {
-    private int id;                   
-    private int requiredBridges;     
-    private int row, col;             
-    private HashMap<Island, Integer> connections;
-    public Island(int id, int requiredBridges, int row, int col) {
+    private int id;
+    private int row;
+    private int col;
+    private int requiredBridges; // total bridges the island must have
+    private int currentBridges;  // total bridges currently connected
+
+    public Island(int id, int row, int col, int requiredBridges) {
         this.id = id;
-        this.requiredBridges = requiredBridges;
         this.row = row;
         this.col = col;
-        this.connections = new HashMap<>();
+        this.requiredBridges = requiredBridges;
+        this.currentBridges = 0;
     }
 
     public int getId() {
@@ -26,8 +23,13 @@ public class Island {
         return requiredBridges;
     }
 
-    public HashMap<Island, Integer> getConnections() {
-        return connections;
+    // increment current bridge count
+    public void addBridges(int count) {
+        this.currentBridges += count;
+    }
+
+    public int getCurrentBridges() {
+        return currentBridges;
     }
 
     public int getRow() {
@@ -37,23 +39,10 @@ public class Island {
     public int getCol() {
         return col;
     }
-
-
-    public void addConnection(Island neighbor, int bridges) {
-        connections.put(neighbor, connections.getOrDefault(neighbor, 0) + bridges);
-    }
-
-
-    public int totalBridges() {
-        int sum = 0;
-        for (int count : connections.values()) {
-            sum += count;
-        }
-        return sum;
-    }
-
+    
     @Override
     public String toString() {
-        return "Island " + id + " (" + requiredBridges + ") at (" + row + "," + col + ")";
+        return "Island " + id + " (row=" + row + ", col=" + col 
+                + ", required=" + requiredBridges + ", current=" + currentBridges + ")";
     }
 }
